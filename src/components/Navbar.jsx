@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X, User, LogOut, ChevronDown } from 'lucide-react'
+import logo from '../assets/logo.png'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -55,7 +56,7 @@ const Navbar = () => {
             <Link to="/" className="flex-shrink-0 flex items-center">
               <img
                 className="h-11 w-auto"
-                src="src/assets/logo.png"
+                src={logo}
                 alt="Sri Vinayaka Tours"
               />
               <span className="ml-2 text-xl font-bold text-blue-800">Sri Vinayaka Tours</span>
