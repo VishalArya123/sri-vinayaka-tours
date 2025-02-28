@@ -57,7 +57,7 @@ const TourPackages = () => {
       id: 5,
       title: 'Anathagiri Hills',
       image: 'https://srivinayakatours.com/thumbnail/ananthagiri_hills_tour.webp',
-      description: 'Anantha Giri Hills is a scenic, forested peak in Telangana with nature trails, a historic temple, old caves, and lodging and dining options.',
+      description: 'Anantha Giri Hills is a scenic , forested peak in Telangana with nature trails, a historic temple, old caves, and lodging and dining options.',
       duration: '1 Day & 0 Night',
       location: 'Telangana',
       price: 1125,
