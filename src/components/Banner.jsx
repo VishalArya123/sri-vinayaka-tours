@@ -37,7 +37,7 @@ const Banner = () => {
   }, [])
   
   return (
-    <div className="relative h-96 md:h-[400px] overflow-hidden">
+    <div className="relative h-60 md:h-[500px] overflow-hidden">
       {/* Banner Images */}
       {banners.map((banner, index) => (
         <div
