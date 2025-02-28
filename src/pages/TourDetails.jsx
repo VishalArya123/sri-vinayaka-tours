@@ -2,72 +2,59 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Calendar, Clock, MapPin, CheckCircle, XCircle, ChevronLeft, ChevronRight, Phone, Bookmark, BookmarkCheck } from 'lucide-react'
 
-// Mock data (replace with API calls)
 const tourData = {
   id: 1,
-  title: "Mysore & Coorg Adventure",
-  location: "Karnataka",
-  duration: "3 Days & 2 Nights",
-  description: "Experience the royal heritage of Mysore and the serene beauty of Coorg in this unforgettable 3-day tour package. Explore the magnificent Mysore Palace, the breathtaking Coorg hills, and more.",
+  title: "One Day Hyderabad Local Sightseeing",
+  location: "Hyderabad, Telangana",
+  duration: "1 Day",
+  description: "Hyderabad, the vibrant capital of Telangana, is a city where history, culture, and modernity blend seamlessly. Known as the City of Pearls, it is renowned for its rich heritage, iconic monuments, and world-famous Hyderabadi Biryani. The city’s historic landmarks, including Charminar, Golconda Fort, and Chowmohalla Palace, showcase its regal past, while museums like the Salarjung Museum and HEH Nizam Museum house rare artifacts and royal treasures. Beyond history, Hyderabad offers scenic beauty with Hussain Sagar Lake, lush green spaces like NTR Garden, and spiritual sites like Birla Mandir. Its thriving IT sector, modern infrastructure, and lively markets add to its charm, making it a perfect destination for travelers. This one-day local sightseeing tour by SRI VINAYAKA TOURS provides an enriching journey through the city's timeless legacy and dynamic present.",
   rating: 4.8,
   reviews: 124,
   adultPrice: {
-    discounted: 5999,
-    actual: 7999
+    discounted: 350,
+    actual: 2500
   },
   childPrice: {
-    discounted: 3999,
-    actual: 5499
+    discounted: 350,
+    actual: 2500
   },
   inclusions: [
     "Bus transportation for pickup, drop-off, and sightseeing",
-    "Professional tour guide",
-    "Accommodation in 3-star hotels (2 nights)",
-    "Breakfast (Day 2 & 3)",
-    "All taxes and service charges"
+    "Sightseeing of all places mentioned in the itinerary"
   ],
   exclusions: [
     "Entry tickets to attractions",
-    "Lunch and dinner",
+    "Food and beverages",
     "Personal expenses",
     "Any activities not mentioned in the itinerary"
   ],
   itinerary: [
     {
       day: "Day 1",
-      title: "Mysore Palace & Zoo",
+      title: "Hyderabad Local Sightseeing",
       places: [
-        { name: "Mysore Palace", type: "visit", entryFee: { adult: 200, child: 100 } },
-        { name: "Mysore Zoo", type: "visit", entryFee: { adult: 150, child: 75 } },
-        { name: "Chamundi Hills", type: "drive" }
-      ]
-    },
-    {
-      day: "Day 2",
-      title: "Coorg Exploration",
-      places: [
-        { name: "Abbey Falls", type: "visit", entryFee: { adult: 100, child: 50 } },
-        { name: "Raja's Seat", type: "visit", entryFee: { adult: 50, child: 20 } },
-        { name: "Coffee Plantation", type: "visit", entryFee: { adult: 0, child: 0 } }
-      ]
-    },
-    {
-      day: "Day 3",
-      title: "Return Journey with Stops",
-      places: [
-        { name: "Golden Temple", type: "visit", entryFee: { adult: 50, child: 20 } },
-        { name: "Nisargadhama", type: "drive" }
+        { name: "Birla Mandir", type: "visit", entryFee: { adult: 0, child: 0 } },
+        { name: "Charminar (No Climbing)", type: "visit" },
+        { name: "Chowmohalla Palace", type: "visit", entryFee: { adult: 100, child: 40 } },
+        { name: "HEH Nizam Museum", type: "visit", entryFee: { adult: 125, child: 0 } },
+        { name: "Salarjung Museum", type: "visit", entryFee: { adult: 50, child: 20 } },
+        { name: "Golconda Fort", type: "visit", entryFee: { adult: 25, child: 0 } },
+        { name: "Hyderabad History in 3D", type: "visit", entryFee: { adult: 130, child: 100 } },
+        { name: "NTR Garden", type: "visit", entryFee: { adult: 20, child: 10 } },
+        { name: "Dr. B R Ambedkar Statue", type: "drive" },
+        { name: "Lumbini Park", type: "drive" },
+        { name: "Hussain Sagar", type: "drive" }
       ]
     }
   ],
   images: [
-    "https://images.unsplash.com/photo-1587922546307-776227941871",
-    "https://images.unsplash.com/photo-1580877854178-95a9bca2dd2e",
-    "https://images.unsplash.com/photo-1588416499018-d8c621e1d2dc",
-    "https://images.unsplash.com/photo-1592125159416-5088662ee5e1"
+    "https://srivinayakatours.com/thumbnail/buddha_banner.webp",
+    "https://srivinayakatours.com/thumbnail/Golconda_Fort.webp",
+    "https://srivinayakatours.com/thumbnail/Charminar.webp"
   ],
   contactNumber: "+91 9876543210"
 }
+
 
 const TourDetails = () => {
   const { id } = useParams()
@@ -87,10 +74,7 @@ const TourDetails = () => {
   
   const handleSaveTour = () => {
     setIsSaved(!isSaved)
-    // Here you would typically implement the actual saving logic
-    // e.g., saving to localStorage or making an API call
     if (!isSaved) {
-      // Show a success message or notification
       console.log(`Tour ${id} saved to favorites`)
     } else {
       console.log(`Tour ${id} removed from favorites`)
@@ -217,6 +201,12 @@ const TourDetails = () => {
                 <span className="ml-2 text-gray-600">({tour.reviews} reviews)</span>
               </div>
             </div>
+            
+            <div>
+              <p className="text-gray-700 leading-relaxed mb-6">
+                {tour.description}
+              </p>
+            </div>
           </div>
           
           {/* Tabs */}
@@ -260,31 +250,28 @@ const TourDetails = () => {
               {/* Overview Tab */}
               {activeTab === 'overview' && (
                 <div>
-                  <p className="text-gray-700 leading-relaxed mb-6">
-                    {tour.description}
-                  </p>
                   <div className="bg-gray-50 p-6 rounded-lg">
                     <h3 className="text-xl font-semibold text-gray-800 mb-4">Tour Highlights</h3>
                     <ul className="space-y-2">
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                        <span>Visit the magnificent Mysore Palace, a historical royal residence</span>
+                        <span>Experience free, serene spiritual views from a beautiful hilltop temple.</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                        <span>Explore the lush coffee plantations of Coorg</span>
+                        <span>Explore the lavish history of the Nizams at Chowmahalla Palace and the Nizam Museum.</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                        <span>Enjoy the scenic beauty of Abbey Falls</span>
+                        <span>Discover the ancient grandeur of Golconda Fort and the world-class Salarjung Museum.</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                        <span>Experience the diverse wildlife at Mysore Zoo</span>
+                        <span>Enjoy leisure and historical immersion at NTR Gardens and the 3D Hyderabad history show.</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                        <span>Comfortable stay at 3-star hotels</span>
+                        <span>Witness iconic Hyderabad landmarks with drive-by views of the Ambedkar Statue, Lumbini Park, and Hussain Sagar.</span>
                       </li>
                     </ul>
                   </div>
@@ -313,7 +300,7 @@ const TourDetails = () => {
                                     </span>
                                   )}
                                 </div>
-                                {place.type === 'visit' && (
+                                {place.type === 'visit' && place.entryFee && (
                                   <div className="text-right text-sm">
                                     <div>Entry Fee (Adult): ₹{place.entryFee.adult}</div>
                                     <div>Entry Fee (Child): ₹{place.entryFee.child}</div>
@@ -417,6 +404,7 @@ const TourDetails = () => {
                   Book Now
                 </Link>
                 <Link
+                  to="#"
                   className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-medium text-center inline-block hover:bg-blue-700 transition-colors"
                 >
                   Share Tour

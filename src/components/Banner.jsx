@@ -6,21 +6,21 @@ const banners = [
     id: 1,
     title: "Explore Beautiful Destinations",
     subtitle: "Discover the wonders of India with our exclusive tour packages",
-    image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da",
+    image: "https://media.istockphoto.com/id/1215274990/photo/high-wide-angle-view-of-charminar-in-the-night.webp?a=1&b=1&s=612x612&w=0&k=20&c=sQggGGYHLaIX4wlJzKYeLkEZHthBO6vLY-Rwwo75KxA=",
     cta: "Browse Tours"
   },
   {
     id: 2,
     title: "Unforgettable Experiences",
     subtitle: "Create memories that last a lifetime with Sri Vinayaka Tours",
-    image: "https://images.unsplash.com/photo-1519922639192-e73293ca430e",
+    image: "https://media.istockphoto.com/id/471170455/photo/hi-tec-city-building.webp?a=1&b=1&s=612x612&w=0&k=20&c=z0qB6HgA_zRS1n1oOL-Si6t0ND92B48jljIPYyIsDSY=",
     cta: "Start Your Journey"
   },
   {
     id: 3,
     title: "Customized Tour Packages",
     subtitle: "Tailored travel experiences for your comfort and convenience",
-    image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944",
+    image: "https://media.istockphoto.com/id/1338651214/photo/hyderabad-india-city-skyline-at-buddha-statue-in-the-hussain-sagar.webp?a=1&b=1&s=612x612&w=0&k=20&c=weLcb_3ukP5RfqB3UcLWaSr2HWhXG-2FOlbXgTCyqR8=",
     cta: "Plan Your Trip"
   }
 ]
@@ -37,7 +37,7 @@ const Banner = () => {
   }, [])
   
   return (
-    <div className="relative h-96 md:h-[500px] overflow-hidden">
+    <div className="relative h-96 md:h-[400px] overflow-hidden">
       {/* Banner Images */}
       {banners.map((banner, index) => (
         <div

@@ -7,14 +7,14 @@ const TestimonialSection = () => {
       id: 1,
       name: 'Rahul Sharma',
       role: 'Adventure Traveler',
-      testimonial: 'Sri Vinayaka Tours provided an exceptional experience during our trip to Kerala. The itinerary was perfectly planned, and the guides were knowledgeable and friendly.',
+      testimonial: 'Sri Vinayaka Tours provided an exceptional experience during our trip to Hyderabad. The itinerary was perfectly planned, and the guides were knowledgeable and friendly.',
       image: 'https://randomuser.me/api/portraits/men/1.jpg'
     },
     {
       id: 2,
       name: 'Priya Patel',
       role: 'Family Vacation',
-      testimonial: 'Our family trip to Rajasthan exceeded all expectations. Every detail was taken care of, and the accommodation was superb. Highly recommended for family travelers!',
+      testimonial: 'Our family trip to Golkonda Fort exceeded all expectations. Every detail was taken care of, and the accommodation was superb. Highly recommended for family travelers!',
       image: 'https://randomuser.me/api/portraits/women/2.jpg'
     }
   ];
