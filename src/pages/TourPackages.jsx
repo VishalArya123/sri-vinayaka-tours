@@ -15,7 +15,7 @@ const TourPackages = () => {
       price: 350,
       rating: 4.8,
       startDate: 'All year',
-      category: 'nature'
+      category: 'cultural'
     },
     {
       id: 2,
@@ -27,7 +27,7 @@ const TourPackages = () => {
       price: 350,
       rating: 4.7,
       startDate: 'All year',
-      category: 'cultural'
+      category: 'entertainment'
     },
     {
       id: 3,
@@ -39,7 +39,7 @@ const TourPackages = () => {
       price: 875,
       rating: 4.9,
       startDate: 'All year',
-      category: 'adventure'
+      category: 'entertainment'
     },
     {
       id: 4,
@@ -51,7 +51,7 @@ const TourPackages = () => {
       price: 1125,
       rating: 4.6,
       startDate: 'All year',
-      category: 'beach'
+      category: 'cultural'
     },
     {
       id: 5,
@@ -63,7 +63,7 @@ const TourPackages = () => {
       price: 1125,
       rating: 4.8,
       startDate: 'All year',
-      category: 'cultural'
+      category: 'adventure'
     },
     {
       id: 6,
@@ -75,7 +75,7 @@ const TourPackages = () => {
       price: 1125,
       rating: 4.9,
       startDate: 'All year',
-      category: 'beach'
+      category: 'temple'
     }
     ,
     {
@@ -84,11 +84,11 @@ const TourPackages = () => {
       image: 'https://srivinayakatours.com/thumbnail/srisailam_tour_cover.webp',
       description: 'Srisailam is a pilgrimage town in Andhra Pradesh, India, known for its ancient Sri Mallikarjuna Jyotirlinga temple and scenic surroundings.',
       duration: '1 Day & 0 Night',
-      location: 'Telangana',
+      location: 'Andhra Pradesh',
       price: 2250,
       rating: 4.8,
       startDate: 'All year',
-      category: 'cultural'
+      category: 'temple'
     },
     {
       id: 8,
@@ -100,7 +100,7 @@ const TourPackages = () => {
       price: 1125,
       rating: 4.9,
       startDate: 'All year',
-      category: 'beach'
+      category: 'dams'
     }
   ];
 
@@ -138,9 +138,9 @@ const TourPackages = () => {
   const categories = [
     { id: 'all', name: 'All Packages' },
     { id: 'adventure', name: 'Adventure' },
-    { id: 'beach', name: 'Beach' },
+    { id: 'dams', name: 'Dams' },
     { id: 'cultural', name: 'Cultural' },
-    { id: 'nature', name: 'Nature & Wildlife' }
+    { id: 'entertainment', name: 'Entertainment' }
   ];
 
   return (
@@ -210,7 +210,7 @@ const TourPackages = () => {
                   <div>
                     <h4 className="font-medium text-gray-700 mb-3">Popular Destinations</h4>
                     <div className="space-y-2">
-                      {['Kerala', 'Rajasthan', 'Goa', 'Ladakh', 'Andaman'].map(destination => (
+                      {['Telangana', 'Andhra Pradesh'].map(destination => (
                         <div key={destination} className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer"
                           onClick={() => {
                             setSearchTerm(destination);
