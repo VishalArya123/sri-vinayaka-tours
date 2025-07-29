@@ -207,7 +207,7 @@ const TourDetails = () => {
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span>Experience free, serene spiritual views from a beautiful hilltop temple.</span>
+                    <span>Experience free,serene spiritual views from a beautiful hilltop temple.</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
