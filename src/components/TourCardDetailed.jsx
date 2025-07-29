@@ -3,12 +3,12 @@ import { Clock, MapPin, Users, Calendar, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const TourCardDetailed = ({ tour }) => {
-  const { id, title, image, description, duration, location, price, rating, startDate } = tour;
+  const { id, title, images, description, duration, location, price, rating, startDate } = tour;
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6 flex flex-col md:flex-row hover:shadow-xl transition-shadow duration-300">
       <div className="md:w-1/3 h-60 md:h-auto relative">
-        <img src={image} alt={title} className="w-full h-full object-cover" />
+        <img src={images[0]} alt={title} className="w-full h-full object-cover" />
         {rating && (
           <div className="absolute top-4 right-4 bg-yellow-400 text-gray-800 font-bold rounded-full p-2 text-sm flex items-center">
             {rating} ★

@@ -1,61 +1,41 @@
+// src/pages/Home.jsx
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import Banner from '../components/Banner'
 import TourCard from '../components/TourCard'
+import ServiceCard from '../components/ServiceCard'
 import TestimonialSection from '../components/TestimonialSection'
 import ContactForm from '../components/ContactForm'
-import hydTour from '../assets/hydTour.webp'
-import ramojiTour from '../assets/ramojiTour.webp'
-
-const featuredTours = [
-  {
-    id: 1,
-    title: "Hyderabad City Tour",
-    location: "Telangana",
-    duration: "1 Day & 0 Nights",
-    rating: 4.8,
-    discountedPrice: 350,
-    actualPrice: 2500,
-    image: "https://srivinayakatours.com/thumbnail/hyderabad_tour.webp"
-  },
-  {
-    id: 2,
-    title: "Ramoji Film City",
-    location: "Telangana",
-    duration: "1 Days & 0 Nights",
-    rating: 4.9,
-    discountedPrice: 350,
-    actualPrice: 2500,
-    image: "https://srivinayakatours.com/thumbnail/ramoji_film_city.webp"
-  },
-  {
-    id: 3,
-    title: "Wonderla",
-    location: "Telangana",
-    duration: "1 Days & 0 Nights",
-    rating: 4.7,
-    discountedPrice: 875,
-    actualPrice: 1000,
-    image: "https://srivinayakatours.com/thumbnail/wonderla.jpg"
-  },
-  {
-    id: 4,
-    title: "Statue of Equality",
-    location: "Telangana",
-    duration: "1 Days & 0 Nights",
-    rating: 4.6,
-    discountedPrice: 1125,
-    actualPrice: 2500,
-    image: "https://srivinayakatours.com/thumbnail/statue_of_equality_tour.webp"
-  }
-]
+import { services, tourPackages } from '../data/mockData'
 
 const Home = () => {
+  // Get featured tours (first 4)
+  const featuredTours = tourPackages.slice(0, 4);
+
   return (
     <div>
       {/* Hero Banner Section */}
       <Banner />
+      
+      {/* Services Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-extrabold text-gray-800 mb-4">Our Services</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Choose from our range of travel services designed to make your journey memorable
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+            {services.map(service => (
+              <ServiceCard key={service.id} service={service} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       
       {/* Featured Tour Packages Section */}
       <section className="py-12 px-4 max-w-7xl mx-auto">

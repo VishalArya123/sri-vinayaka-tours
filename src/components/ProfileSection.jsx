@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import { User, Edit2, Save, Package, Clock, Calendar, MapPin, Heart,Bookmark } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Edit2, Save, Package, Calendar, MapPin, Bookmark } from 'lucide-react';
+import { storage } from '../utils/storage';
 
 const ProfileSection = () => {
-  // Mock user data
-  const [user, setUser] = useState({
+  // Default user profile
+  const defaultUser = {
     name: 'Arjun Kumar',
     email: 'arjun.kumar@example.com',
     phone: '+91 98765 43210',
     address: 'Bangalore, Karnataka',
     profileImage: 'https://randomuser.me/api/portraits/men/32.jpg'
-  });
+  };
 
-  // Mock booking history
-  const [bookings, setBookings] = useState([
+  // Default bookings
+  const defaultBookings = [
     {
       id: 1,
       tourName: 'Kerala Backwaters Explorer',
@@ -29,42 +30,41 @@ const ProfileSection = () => {
       price: 18500,
       image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da'
     }
-  ]);
+  ];
 
-  // Mock wishlist/favorites data
-  const [wishlist, setWishlist] = useState([
-    {
-      id: 1,
-      tourName: 'Ladakh Adventure',
-      location: 'Leh, Ladakh',
-      price: 22000,
-      savedOn: '18 Jan 2025',
-      image: 'https://images.unsplash.com/photo-1574700655776-c1cb53a5ddb9'
-    },
-    {
-      id: 2,
-      tourName: 'Goa Beach Retreat',
-      location: 'North Goa',
-      price: 12500,
-      savedOn: '05 Feb 2025',
-      image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2'
-    },
-    {
-      id: 3,
-      tourName: 'Andaman Island Hopping',
-      location: 'Port Blair',
-      price: 28000,
-      savedOn: '22 Feb 2025',
-      image: 'https://images.unsplash.com/photo-1589309736404-2e142a2acdf0'
-    }
-  ]);
-
+  // Initialize state with data from localStorage
+  const [user, setUser] = useState(storage.get('userProfile', defaultUser));
+  const [bookings, setBookings] = useState(
+    Array.isArray(storage.getBookingData()) ? storage.getBookingData() : defaultBookings
+  );
+  const [wishlist, setWishlist] = useState(
+    Array.isArray(storage.getWishlist()) ? storage.getWishlist() : []
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ ...user });
 
+  // Save user profile to localStorage when user state changes
+  useEffect(() => {
+    storage.save('userProfile', user);
+  }, [user]);
+
+  // Save bookings to localStorage when bookings state changes
+  useEffect(() => {
+    if (Array.isArray(bookings)) {
+      storage.saveBookingData(bookings);
+    }
+  }, [bookings]);
+
+  // Save wishlist to localStorage when wishlist state changes
+  useEffect(() => {
+    if (Array.isArray(wishlist)) {
+      storage.saveWishlist(wishlist);
+    }
+  }, [wishlist]);
+
   const handleEditToggle = () => {
     if (isEditing) {
-      // Save changes
+      // Save changes to user state and localStorage
       setUser(editForm);
     }
     setIsEditing(!isEditing);
@@ -79,7 +79,8 @@ const ProfileSection = () => {
   };
 
   const removeFromWishlist = (id) => {
-    setWishlist(wishlist.filter(item => item.id !== id));
+    storage.removeFromWishlist(id, 'tour');
+    setWishlist(storage.getWishlist());
   };
 
   return (
@@ -209,7 +210,7 @@ const ProfileSection = () => {
                     <div className="relative h-40">
                       <img 
                         src={item.image} 
-                        alt={item.tourName} 
+                        alt={item.name} 
                         className="w-full h-full object-cover"
                       />
                       <button 
@@ -222,7 +223,7 @@ const ProfileSection = () => {
                     </div>
                     
                     <div className="p-4">
-                      <h4 className="text-lg font-bold text-gray-800 mb-1">{item.tourName}</h4>
+                      <h4 className="text-lg font-bold text-gray-800 mb-1">{item.name}</h4>
                       <div className="flex items-center text-gray-600 mb-2">
                         <MapPin size={14} className="mr-1" />
                         <span className="text-sm">{item.location}</span>
@@ -249,48 +250,57 @@ const ProfileSection = () => {
             </h3>
             
             <div className="space-y-4">
-              {bookings.map((booking) => (
-                <div 
-                  key={booking.id} 
-                  className="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row hover:shadow-md transition-shadow"
-                >
-                  <div className="sm:w-1/4 h-32 mb-4 sm:mb-0">
-                    <img 
-                      src={booking.image} 
-                      alt={booking.tourName} 
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  </div>
-                  
-                  <div className="sm:w-3/4 sm:pl-6 flex flex-col justify-between">
-                    <div>
-                      <h4 className="text-lg font-bold text-gray-800">{booking.tourName}</h4>
-                      
-                      <div className="grid grid-cols-2 gap-2 mt-2">
-                        <div className="flex items-center text-gray-600">
-                          <Calendar size={16} className="mr-2" />
-                          <span>{booking.date}</span>
-                        </div>
-                        <div className="flex items-center text-gray-600">
-                          <MapPin size={16} className="mr-2" />
-                          <span>Tour Package</span>
-                        </div>
-                      </div>
+              {Array.isArray(bookings) && bookings.length === 0 ? (
+                <div className="bg-gray-50 p-6 rounded-lg text-center">
+                  <p className="text-gray-600">You don't have any bookings yet.</p>
+                  <button className="mt-2 text-blue-600 hover:text-blue-700 font-medium">
+                    Browse Tours
+                  </button>
+                </div>
+              ) : (
+                Array.isArray(bookings) && bookings.map((booking) => (
+                  <div 
+                    key={booking.id} 
+                    className="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row hover:shadow-md transition-shadow"
+                  >
+                    <div className="sm:w-1/4 h-32 mb-4 sm:mb-0">
+                      <img 
+                        src={booking.image} 
+                        alt={booking.tourName} 
+                        className="w-full h-full object-cover rounded-lg"
+                      />
                     </div>
                     
-                    <div className="flex justify-between items-center mt-4">
-                      <span className="font-medium text-gray-800">₹{booking.price.toLocaleString()}</span>
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        booking.status === 'Completed' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {booking.status}
-                      </span>
+                    <div className="sm:w-3/4 sm:pl-6 flex flex-col justify-between">
+                      <div>
+                        <h4 className="text-lg font-bold text-gray-800">{booking.tourName}</h4>
+                        
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                          <div className="flex items-center text-gray-600">
+                            <Calendar size={16} className="mr-2" />
+                            <span>{booking.date}</span>
+                          </div>
+                          <div className="flex items-center text-gray-600">
+                            <MapPin size={16} className="mr-2" />
+                            <span>Tour Package</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center mt-4">
+                        <span className="font-medium text-gray-800">₹{booking.price.toLocaleString()}</span>
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          booking.status === 'Completed' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {booking.status}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>

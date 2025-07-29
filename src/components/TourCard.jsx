@@ -6,7 +6,7 @@ const TourCard = ({ tour }) => {
     <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
       <div className="relative">
         <img 
-          src={tour.image} 
+          src={tour.images[0]} 
           alt={tour.title} 
           className="w-full h-48 object-cover"
         />
@@ -31,8 +31,8 @@ const TourCard = ({ tour }) => {
         
         <div className="flex justify-between items-center mt-4">
           <div>
-            <span className="text-blue-600 font-bold">₹{tour.discountedPrice}</span>
-            <span className="text-gray-500 text-sm line-through ml-2">₹{tour.actualPrice}</span>
+            <span className="text-blue-600 font-bold">₹{tour.price}</span>
+            <span className="text-gray-500 text-sm line-through ml-2">₹{tour.originalPrice}</span>
           </div>
           
           <Link 

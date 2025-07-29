@@ -10,7 +10,7 @@ const Navbar = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const dropdownRef = useRef(null)
-  
+
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false)
@@ -21,7 +21,7 @@ const Navbar = () => {
     const user = localStorage.getItem('user')
     setIsLoggedIn(!!user)
   }, [])
-  
+
   // Handle click outside dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -29,22 +29,18 @@ const Navbar = () => {
         setIsDropdownOpen(false)
       }
     }
-    
+
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
-  
+
   // Handle logout
   const handleLogout = () => {
-    // Remove user from localStorage
     localStorage.removeItem('user')
-    // Update logged in state
     setIsLoggedIn(false)
-    // Close dropdown
     setIsDropdownOpen(false)
-    // Redirect to home
     navigate('/')
   }
 
@@ -68,8 +64,8 @@ const Navbar = () => {
             <Link
               to="/"
               className={`px-3 py-2 text-sm font-medium ${
-                location.pathname === '/' 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
+                location.pathname === '/'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600'
               }`}
             >
@@ -78,8 +74,8 @@ const Navbar = () => {
             <Link
               to="/about"
               className={`px-3 py-2 text-sm font-medium ${
-                location.pathname === '/about' 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
+                location.pathname === '/about'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600'
               }`}
             >
@@ -88,24 +84,34 @@ const Navbar = () => {
             <Link
               to="/tour-packages"
               className={`px-3 py-2 text-sm font-medium ${
-                location.pathname === '/tour-packages' 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
+                location.pathname === '/tour-packages'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600'
               }`}
             >
               Tour Packages
             </Link>
             <Link
+              to="/rental-service"
+              className={`px-3 py-2 text-sm font-medium ${
+                location.pathname === '/rental-service'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600'
+              }`}
+            >
+              Rental Service
+            </Link>
+            <Link
               to="/contact"
               className={`px-3 py-2 text-sm font-medium ${
-                location.pathname === '/contact' 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
+                location.pathname === '/contact'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600'
               }`}
             >
               Contact Us
             </Link>
-            
+
             {isLoggedIn ? (
               <div className="relative ml-4" ref={dropdownRef}>
                 <button
@@ -116,7 +122,7 @@ const Navbar = () => {
                   Profile
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
-                
+
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <div className="py-1">
@@ -140,7 +146,7 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <Link 
+              <Link
                 to="/login"
                 className="ml-4 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
               >
@@ -173,8 +179,8 @@ const Navbar = () => {
             <Link
               to="/"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                location.pathname === '/' 
-                  ? 'bg-blue-100 text-blue-600' 
+                location.pathname === '/'
+                  ? 'bg-blue-100 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >
@@ -183,8 +189,8 @@ const Navbar = () => {
             <Link
               to="/about"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                location.pathname === '/about' 
-                  ? 'bg-blue-100 text-blue-600' 
+                location.pathname === '/about'
+                  ? 'bg-blue-100 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >
@@ -193,18 +199,28 @@ const Navbar = () => {
             <Link
               to="/tour-packages"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                location.pathname === '/tour-packages' 
-                  ? 'bg-blue-100 text-blue-600' 
+                location.pathname === '/tour-packages'
+                  ? 'bg-blue-100 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >
               Tour Packages
             </Link>
             <Link
+              to="/rental-service"
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                location.pathname === '/rental-service'
+                  ? 'bg-blue-100 text-blue-600'
+                  : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+              }`}
+            >
+              Rental Service
+            </Link>
+            <Link
               to="/contact"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                location.pathname === '/contact' 
-                  ? 'bg-blue-100 text-blue-600' 
+                location.pathname === '/contact'
+                  ? 'bg-blue-100 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >
