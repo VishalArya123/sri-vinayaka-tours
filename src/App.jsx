@@ -12,11 +12,12 @@ import Contact from './pages/Contact'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
 import Register from './pages/Register'
-
+import ScrollToTop from './components/ScrollToTop.jsx';
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
+      <ScrollToTop />
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
