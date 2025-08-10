@@ -1,142 +1,232 @@
-// src/pages/BookingForm.jsx
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Calendar, User, Users, MapPin, Phone, Mail, CheckCircle, Info, CreditCard } from 'lucide-react';
-import ServiceSummaryCard from '../components/ServiceSummaryCard';
-import { storage } from '../utils/storage';
+import React, { useState, useEffect } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  User,
+  Users,
+  MapPin,
+  Phone,
+  Mail,
+  CheckCircle,
+  Info,
+  CreditCard,
+} from "lucide-react"
+import ServiceSummaryCard from "../components/ServiceSummaryCard"
+import { storage } from "../utils/storage"
 
 const BookingForm = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const bookingData = location.state || storage.getBookingData();
+  const location = useLocation()
+  const navigate = useNavigate()
+  const bookingData = location.state || storage.getBookingData()
 
   // Form states
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
     // Basic Details
-    serviceDate: '',
+    serviceDate: "",
     adultCount: 1,
     childCount: 0,
-    boardingPoint: '',
-    droppingPoint: '',
+    boardingPoint: "",
+    droppingPoint: "",
     
+    // Vehicle specific fields
+    pickupLocation: "",
+    dropoffLocation: "",
+
     // Contact Information
-    contactName: '',
-    contactGender: '',
-    contactAge: '',
-    contactMobile: '',
-    contactAlternateMobile: '',
-    contactEmail: '',
-    
+    contactName: "",
+    contactGender: "",
+    contactAge: "",
+    contactMobile: "",
+    contactAlternateMobile: "",
+    contactEmail: "",
+
     // Passenger Details (will be populated dynamically)
-    adultPassengers: [{ name: '', gender: '', age: '' }],
+    adultPassengers: [{ name: "", gender: "", age: "" }],
     childPassengers: [],
-    
+
     // Payment Option
-    paymentOption: 'minimum'
-  });
+    paymentOption: "minimum",
+  })
 
   // Redirect if no booking data
   useEffect(() => {
     if (!bookingData) {
-      navigate('/');
-      return;
+      navigate("/") // Redirect to home or tour packages page
+      return
     }
-  }, [bookingData, navigate]);
+    // Pre-fill contact info if user is logged in
+    const userProfile = storage.getUserProfile()
+    if (userProfile && userProfile.name) {
+      setFormData((prev) => ({
+        ...prev,
+        contactName: userProfile.name || "",
+        contactMobile: userProfile.phone || "",
+        contactEmail: userProfile.email || "",
+      }))
+    }
+  }, [bookingData, navigate])
 
   // Dummy data for dropdown options
   const boardingPoints = [
-    { id: 1, name: 'Central Station - 8:00 AM', time: '8:00 AM' },
-    { id: 2, name: 'Airport Terminal - 8:30 AM', time: '8:30 AM' },
-    { id: 3, name: 'City Center - 9:00 AM', time: '9:00 AM' },
-  ];
+    { id: 1, name: "Central Station - 8:00 AM", time: "8:00 AM" },
+    { id: 2, name: "Airport Terminal - 8:30 AM", time: "8:30 AM" },
+    { id: 3, name: "City Center - 9:00 AM", time: "9:00 AM" },
+  ]
 
   // Update passenger arrays when counts change
   useEffect(() => {
     // Update adult passengers
     if (formData.adultCount > formData.adultPassengers.length) {
-      const newAdultPassengers = [...formData.adultPassengers];
+      const newAdultPassengers = [...formData.adultPassengers]
       for (let i = formData.adultPassengers.length; i < formData.adultCount; i++) {
-        newAdultPassengers.push({ name: '', gender: '', age: '' });
+        newAdultPassengers.push({ name: "", gender: "", age: "" })
       }
-      setFormData({ ...formData, adultPassengers: newAdultPassengers });
+      setFormData((prev) => ({ ...prev, adultPassengers: newAdultPassengers }))
     } else if (formData.adultCount < formData.adultPassengers.length) {
-      const newAdultPassengers = formData.adultPassengers.slice(0, formData.adultCount);
-      setFormData({ ...formData, adultPassengers: newAdultPassengers });
+      const newAdultPassengers = formData.adultPassengers.slice(0, formData.adultCount)
+      setFormData((prev) => ({ ...prev, adultPassengers: newAdultPassengers }))
     }
-
     // Update child passengers
     if (formData.childCount > formData.childPassengers.length) {
-      const newChildPassengers = [...formData.childPassengers];
+      const newChildPassengers = [...formData.childPassengers]
       for (let i = formData.childPassengers.length; i < formData.childCount; i++) {
-        newChildPassengers.push({ name: '', gender: '', age: '' });
+        newChildPassengers.push({ name: "", gender: "", age: "" })
       }
-      setFormData({ ...formData, childPassengers: newChildPassengers });
+      setFormData((prev) => ({ ...prev, childPassengers: newChildPassengers }))
     } else if (formData.childCount < formData.childPassengers.length) {
-      const newChildPassengers = formData.childPassengers.slice(0, formData.childCount);
-      setFormData({ ...formData, childPassengers: newChildPassengers });
+      const newChildPassengers = formData.childPassengers.slice(0, formData.childCount)
+      setFormData((prev) => ({ ...prev, childPassengers: newChildPassengers }))
     }
-  }, [formData.adultCount, formData.childCount]);
+  }, [formData.adultCount, formData.childCount])
 
   // Handle input changes
   const handleInputChange = (e, section, index = null) => {
-    const { name, value } = e.target;
-
-    if (section === 'basic' || section === 'contact' || section === 'payment') {
+    const { name, value } = e.target
+    if (section === "basic" || section === "contact" || section === "payment") {
       setFormData({
         ...formData,
-        [name]: value
-      });
-    } else if (section === 'adultPassenger' && index !== null) {
-      const updatedAdultPassengers = [...formData.adultPassengers];
+        [name]: value,
+      })
+    } else if (section === "adultPassenger" && index !== null) {
+      const updatedAdultPassengers = [...formData.adultPassengers]
       updatedAdultPassengers[index] = {
         ...updatedAdultPassengers[index],
-        [name]: value
-      };
+        [name]: value,
+      }
       setFormData({
         ...formData,
-        adultPassengers: updatedAdultPassengers
-      });
-    } else if (section === 'childPassenger' && index !== null) {
-      const updatedChildPassengers = [...formData.childPassengers];
+        adultPassengers: updatedAdultPassengers,
+      })
+    } else if (section === "childPassenger" && index !== null) {
+      const updatedChildPassengers = [...formData.childPassengers]
       updatedChildPassengers[index] = {
         ...updatedChildPassengers[index],
-        [name]: value
-      };
+        [name]: value,
+      }
       setFormData({
         ...formData,
-        childPassengers: updatedChildPassengers
-      });
+        childPassengers: updatedChildPassengers,
+      })
     }
-  };
+  }
+
+  // Form validation for current step
+  const validateStep = () => {
+    if (currentStep === 1) {
+      if (!formData.serviceDate) {
+        alert("Please select a service date.")
+        return false
+      }
+      if (bookingData.type === "tour" && (!formData.boardingPoint || !formData.droppingPoint)) {
+        alert("Please select both boarding and dropping points.")
+        return false
+      }
+      if (bookingData.type === "vehicle" && (!formData.pickupLocation || !formData.dropoffLocation)) {
+        alert("Please enter both pickup and dropoff locations.")
+        return false
+      }
+    } else if (currentStep === 2) {
+      if (
+        !formData.contactName ||
+        !formData.contactGender ||
+        !formData.contactAge ||
+        !formData.contactMobile ||
+        !formData.contactEmail
+      ) {
+        alert("Please fill in all contact information fields.")
+        return false
+      }
+      if (formData.adultCount > 0) {
+        for (const passenger of formData.adultPassengers) {
+          if (!passenger.name || !passenger.gender || !passenger.age) {
+            alert("Please fill in all adult passenger details.")
+            return false
+          }
+        }
+      }
+      if (formData.childCount > 0) {
+        for (const passenger of formData.childPassengers) {
+          if (!passenger.name || !passenger.gender || !passenger.age) {
+            alert("Please fill in all child passenger details.")
+            return false
+          }
+        }
+      }
+    }
+    return true
+  }
 
   // Navigation functions
   const nextStep = () => {
-    setCurrentStep(currentStep + 1);
-  };
-
+    if (validateStep()) {
+      setCurrentStep(currentStep + 1)
+    }
+  }
   const prevStep = () => {
-    setCurrentStep(currentStep - 1);
-  };
+    setCurrentStep(currentStep - 1)
+  }
 
   const handleFinalSubmit = () => {
+    if (!validateStep()) {
+      return
+    }
     // Save final booking data
     const finalBookingData = {
       ...bookingData,
       formData,
-      submittedAt: new Date().toISOString()
-    };
+      submittedAt: new Date().toISOString(),
+      status: "confirmed",
+    }
+
+    storage.saveCompletedBooking(finalBookingData)
+    storage.clearBookingData()
+
+    // Show success message
+    alert("Booking submitted successfully! You will receive a confirmation shortly.")
     
-    storage.save('completedBooking', finalBookingData);
-    
-    // Simulate booking confirmation
-    alert('Booking submitted successfully! You will receive a confirmation shortly.');
-    navigate('/');
-  };
+    // Navigate based on booking type
+    if (bookingData.type === "tour") {
+      navigate("/tour-packages")
+    } else if (bookingData.type === "vehicle") {
+      navigate("/rental-service")
+    } else {
+      navigate("/")
+    }
+  }
 
   if (!bookingData) {
-    return null;
+    return null // Or a loading spinner/message
   }
+
+  // Get service name and price
+  const serviceName = bookingData.type === 'tour' 
+    ? bookingData.tour?.title 
+    : bookingData.vehicle?.name
+  
+  const servicePrice = bookingData.selectedPlan?.price || 0
 
   // Render form steps
   const renderStep = () => {
@@ -144,148 +234,211 @@ const BookingForm = () => {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold">Basic Details</h2>
-            
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Basic Details</h2>
+
             {/* Date Selection */}
             <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {bookingData.type === 'tour' ? 'Tour Date' : 'Service Date'} <span className="text-red-500">*</span>
+              <label htmlFor="serviceDate" className="block text-sm font-medium text-gray-700 mb-2">
+                {bookingData.type === "tour" ? "Tour Date" : "Service Date"} <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
                   type="date"
+                  id="serviceDate"
                   name="serviceDate"
                   value={formData.serviceDate}
-                  onChange={(e) => handleInputChange(e, 'basic')}
-                  className="w-full p-2 border border-gray-300 rounded-md pl-10"
+                  onChange={(e) => handleInputChange(e, "basic")}
+                  className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
-                <Calendar className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               </div>
             </div>
-            
+
             {/* Passenger Count */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="adultCount" className="block text-sm font-medium text-gray-700 mb-2">
                   Adults <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <select
+                    id="adultCount"
                     name="adultCount"
                     value={formData.adultCount}
-                    onChange={(e) => handleInputChange(e, 'basic')}
-                    className="w-full p-2 border border-gray-300 rounded-md pl-10"
+                    onChange={(e) => handleInputChange(e, "basic")}
+                    className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
                     required
                   >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                      <option key={num} value={num}>{num}</option>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
                     ))}
                   </select>
-                  <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 </div>
               </div>
-              
+
               <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Children</label>
+                <label htmlFor="childCount" className="block text-sm font-medium text-gray-700 mb-2">
+                  Children
+                </label>
                 <div className="relative">
                   <select
+                    id="childCount"
                     name="childCount"
                     value={formData.childCount}
-                    onChange={(e) => handleInputChange(e, 'basic')}
-                    className="w-full p-2 border border-gray-300 rounded-md pl-10"
+                    onChange={(e) => handleInputChange(e, "basic")}
+                    className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                      <option key={num} value={num}>{num}</option>
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
                     ))}
                   </select>
-                  <Users className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                  <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 </div>
               </div>
             </div>
-            
-            {/* Boarding and Dropping Points (for tours) */}
-            {bookingData.type === 'tour' && (
+
+            {/* Tour specific fields - Boarding and Dropping Points */}
+            {bookingData.type === "tour" && (
               <>
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="boardingPoint" className="block text-sm font-medium text-gray-700 mb-2">
                     Boarding Point <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <select
+                      id="boardingPoint"
                       name="boardingPoint"
                       value={formData.boardingPoint}
-                      onChange={(e) => handleInputChange(e, 'basic')}
-                      className="w-full p-2 border border-gray-300 rounded-md pl-10"
+                      onChange={(e) => handleInputChange(e, "basic")}
+                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
                       required
                     >
                       <option value="">Select Boarding Point</option>
-                      {boardingPoints.map(point => (
-                        <option key={point.id} value={point.name}>{point.name}</option>
+                      {boardingPoints.map((point) => (
+                        <option key={point.id} value={point.name}>
+                          {point.name}
+                        </option>
                       ))}
                     </select>
-                    <MapPin className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   </div>
                 </div>
-                
+
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="droppingPoint" className="block text-sm font-medium text-gray-700 mb-2">
                     Dropping Point <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <select
+                      id="droppingPoint"
                       name="droppingPoint"
                       value={formData.droppingPoint || formData.boardingPoint}
-                      onChange={(e) => handleInputChange(e, 'basic')}
-                      className="w-full p-2 border border-gray-300 rounded-md pl-10"
+                      onChange={(e) => handleInputChange(e, "basic")}
+                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
                       required
                     >
                       <option value="">Select Dropping Point</option>
-                      {boardingPoints.map(point => (
-                        <option key={point.id} value={point.name}>{point.name}</option>
+                      {boardingPoints.map((point) => (
+                        <option key={point.id} value={point.name}>
+                          {point.name}
+                        </option>
                       ))}
                     </select>
-                    <MapPin className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Vehicle specific fields - Pickup and Dropoff locations */}
+            {bookingData.type === "vehicle" && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="pickupLocation" className="block text-sm font-medium text-gray-700 mb-2">
+                    Pickup Location <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="pickupLocation"
+                      name="pickupLocation"
+                      value={formData.pickupLocation}
+                      onChange={(e) => handleInputChange(e, "basic")}
+                      placeholder="Enter pickup address"
+                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="dropoffLocation" className="block text-sm font-medium text-gray-700 mb-2">
+                    Dropoff Location <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="dropoffLocation"
+                      name="dropoffLocation"
+                      value={formData.dropoffLocation}
+                      onChange={(e) => handleInputChange(e, "basic")}
+                      placeholder="Enter dropoff address"
+                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   </div>
                 </div>
               </>
             )}
           </div>
-        );
-      
+        )
+
       case 2:
         return (
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold">Contact & Passenger Details</h2>
-            
+          <div className="space-y-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Contact & Passenger Details</h2>
+
             {/* Contact Information */}
-            <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-6">
-              <h3 className="font-medium text-lg mb-4">Contact Information</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 shadow-sm">
+              <h3 className="font-bold text-xl text-gray-800 mb-5 flex items-center">
+                <Info className="h-6 w-6 mr-3 text-blue-600" />
+                Your Contact Information
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="contactName" className="block text-sm font-medium text-gray-700 mb-2">
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
+                    id="contactName"
                     name="contactName"
                     value={formData.contactName}
-                    onChange={(e) => handleInputChange(e, 'contact')}
-                    className="w-full p-2 border border-gray-300 rounded-md"
+                    onChange={(e) => handleInputChange(e, "contact")}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
                 </div>
-                
+
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="contactGender" className="block text-sm font-medium text-gray-700 mb-2">
                     Gender <span className="text-red-500">*</span>
                   </label>
                   <select
+                    id="contactGender"
                     name="contactGender"
                     value={formData.contactGender}
-                    onChange={(e) => handleInputChange(e, 'contact')}
-                    className="w-full p-2 border border-gray-300 rounded-md"
+                    onChange={(e) => handleInputChange(e, "contact")}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                   >
                     <option value="">Select Gender</option>
@@ -294,110 +447,113 @@ const BookingForm = () => {
                     <option value="other">Other</option>
                   </select>
                 </div>
-                
+
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="contactAge" className="block text-sm font-medium text-gray-700 mb-2">
                     Age <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
+                    id="contactAge"
                     name="contactAge"
                     value={formData.contactAge}
-                    onChange={(e) => handleInputChange(e, 'contact')}
-                    className="w-full p-2 border border-gray-300 rounded-md"
+                    onChange={(e) => handleInputChange(e, "contact")}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     min="18"
                     required
                   />
                 </div>
-                
-                <div className="form-group relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+
+                <div className="form-group">
+                  <label htmlFor="contactMobile" className="block text-sm font-medium text-gray-700 mb-2">
                     Mobile Number <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <input
                       type="tel"
+                      id="contactMobile"
                       name="contactMobile"
                       value={formData.contactMobile}
-                      onChange={(e) => handleInputChange(e, 'contact')}
-                      className="w-full p-2 border border-gray-300 rounded-md pl-10"
+                      onChange={(e) => handleInputChange(e, "contact")}
+                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
-                    <Phone className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   </div>
                 </div>
-                
+
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="contactAlternateMobile" className="block text-sm font-medium text-gray-700 mb-2">
                     Alternate Mobile Number
                   </label>
                   <div className="relative">
                     <input
                       type="tel"
+                      id="contactAlternateMobile"
                       name="contactAlternateMobile"
                       value={formData.contactAlternateMobile}
-                      onChange={(e) => handleInputChange(e, 'contact')}
-                      className="w-full p-2 border border-gray-300 rounded-md pl-10"
+                      onChange={(e) => handleInputChange(e, "contact")}
+                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    <Phone className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   </div>
                 </div>
-                
+
                 <div className="form-group">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-2">
                     Email ID <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <input
                       type="email"
+                      id="contactEmail"
                       name="contactEmail"
                       value={formData.contactEmail}
-                      onChange={(e) => handleInputChange(e, 'contact')}
-                      className="w-full p-2 border border-gray-300 rounded-md pl-10"
+                      onChange={(e) => handleInputChange(e, "contact")}
+                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
-                    <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   </div>
                 </div>
               </div>
-              
-              <div className="mt-3 text-sm text-blue-600 flex items-center">
-                <Info className="h-4 w-4 mr-1" />
+
+              <div className="mt-6 text-sm text-blue-700 flex items-center bg-blue-100 p-3 rounded-lg">
+                <Info className="h-5 w-5 mr-2 flex-shrink-0" />
                 <span>Booking details will be sent to your email and mobile number.</span>
               </div>
             </div>
-            
+
             {/* Adult Passengers */}
             {formData.adultPassengers.map((passenger, index) => (
-              <div 
-                key={`adult-${index}`} 
-                className="bg-gray-50 p-4 rounded-md border border-gray-200"
-              >
-                <h3 className="font-medium text-lg mb-4">Adult {index + 1}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div key={`adult-${index}`} className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+                <h3 className="font-bold text-xl text-gray-800 mb-5">Adult Passenger {index + 1}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor={`adult-name-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
                       Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
+                      id={`adult-name-${index}`}
                       name="name"
                       value={passenger.name}
-                      onChange={(e) => handleInputChange(e, 'adultPassenger', index)}
-                      className="w-full p-2 border border-gray-300 rounded-md"
+                      onChange={(e) => handleInputChange(e, "adultPassenger", index)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
                   </div>
-                  
+
                   <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor={`adult-gender-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
                       Gender <span className="text-red-500">*</span>
                     </label>
                     <select
+                      id={`adult-gender-${index}`}
                       name="gender"
                       value={passenger.gender}
-                      onChange={(e) => handleInputChange(e, 'adultPassenger', index)}
-                      className="w-full p-2 border border-gray-300 rounded-md"
+                      onChange={(e) => handleInputChange(e, "adultPassenger", index)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       required
                     >
                       <option value="">Select Gender</option>
@@ -406,17 +562,18 @@ const BookingForm = () => {
                       <option value="other">Other</option>
                     </select>
                   </div>
-                  
+
                   <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor={`adult-age-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
                       Age <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
+                      id={`adult-age-${index}`}
                       name="age"
                       value={passenger.age}
-                      onChange={(e) => handleInputChange(e, 'adultPassenger', index)}
-                      className="w-full p-2 border border-gray-300 rounded-md"
+                      onChange={(e) => handleInputChange(e, "adultPassenger", index)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       min="18"
                       required
                     />
@@ -424,38 +581,37 @@ const BookingForm = () => {
                 </div>
               </div>
             ))}
-            
+
             {/* Child Passengers */}
             {formData.childPassengers.map((passenger, index) => (
-              <div 
-                key={`child-${index}`} 
-                className="bg-gray-50 p-4 rounded-md border border-gray-200"
-              >
-                <h3 className="font-medium text-lg mb-4">Child {index + 1}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div key={`child-${index}`} className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+                <h3 className="font-bold text-xl text-gray-800 mb-5">Child Passenger {index + 1}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor={`child-name-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
                       Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
+                      id={`child-name-${index}`}
                       name="name"
                       value={passenger.name}
-                      onChange={(e) => handleInputChange(e, 'childPassenger', index)}
-                      className="w-full p-2 border border-gray-300 rounded-md"
+                      onChange={(e) => handleInputChange(e, "childPassenger", index)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       required
                     />
                   </div>
-                  
+
                   <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor={`child-gender-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
                       Gender <span className="text-red-500">*</span>
                     </label>
                     <select
+                      id={`child-gender-${index}`}
                       name="gender"
                       value={passenger.gender}
-                      onChange={(e) => handleInputChange(e, 'childPassenger', index)}
-                      className="w-full p-2 border border-gray-300 rounded-md"
+                      onChange={(e) => handleInputChange(e, "childPassenger", index)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       required
                     >
                       <option value="">Select Gender</option>
@@ -464,17 +620,18 @@ const BookingForm = () => {
                       <option value="other">Other</option>
                     </select>
                   </div>
-                  
+
                   <div className="form-group">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor={`child-age-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
                       Age <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
+                      id={`child-age-${index}`}
                       name="age"
                       value={passenger.age}
-                      onChange={(e) => handleInputChange(e, 'childPassenger', index)}
-                      className="w-full p-2 border border-gray-300 rounded-md"
+                      onChange={(e) => handleInputChange(e, "childPassenger", index)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       min="2"
                       max="17"
                       required
@@ -484,186 +641,236 @@ const BookingForm = () => {
               </div>
             ))}
           </div>
-        );
-      
+        )
+
       case 3:
+        const totalAmount = servicePrice
+        const minimumPayment = Math.ceil(totalAmount * 0.1)
         return (
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold">Review & Payment</h2>
-            
+          <div className="space-y-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Review & Payment</h2>
+
             {/* Summary */}
-            <div className="bg-gray-50 p-6 rounded-md border border-gray-200">
-              <h3 className="font-medium text-lg mb-4">Booking Summary</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 shadow-sm">
+              <h3 className="font-bold text-xl text-gray-800 mb-5 flex items-center">
+                <Info className="h-6 w-6 mr-3 text-blue-600" />
+                Your Booking Summary
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Service Date</h4>
-                  <p className="text-lg">{formData.serviceDate || 'Not selected'}</p>
+                  <h4 className="text-sm font-medium text-gray-600 mb-1">Service Date</h4>
+                  <p className="text-lg font-semibold text-gray-900">{formData.serviceDate || "Not selected"}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Contact Person</h4>
-                  <p className="text-lg">{formData.contactName || 'Not provided'}</p>
+                  <h4 className="text-sm font-medium text-gray-600 mb-1">Contact Person</h4>
+                  <p className="text-lg font-semibold text-gray-900">{formData.contactName || "Not provided"}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Adults</h4>
-                  <p className="text-lg">{formData.adultCount}</p>
+                  <h4 className="text-sm font-medium text-gray-600 mb-1">Adults</h4>
+                  <p className="text-lg font-semibold text-gray-900">{formData.adultCount}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Children</h4>
-                  <p className="text-lg">{formData.childCount}</p>
+                  <h4 className="text-sm font-medium text-gray-600 mb-1">Children</h4>
+                  <p className="text-lg font-semibold text-gray-900">{formData.childCount}</p>
                 </div>
+                
+                {/* Tour specific fields */}
+                {bookingData.type === "tour" && (
+                  <>
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-600 mb-1">Boarding Point</h4>
+                      <p className="text-lg font-semibold text-gray-900">{formData.boardingPoint || "N/A"}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-600 mb-1">Dropping Point</h4>
+                      <p className="text-lg font-semibold text-gray-900">{formData.droppingPoint || "N/A"}</p>
+                    </div>
+                  </>
+                )}
+                
+                {/* Vehicle specific fields */}
+                {bookingData.type === "vehicle" && (
+                  <>
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-600 mb-1">Pickup Location</h4>
+                      <p className="text-lg font-semibold text-gray-900">{formData.pickupLocation || "N/A"}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-600 mb-1">Dropoff Location</h4>
+                      <p className="text-lg font-semibold text-gray-900">{formData.dropoffLocation || "N/A"}</p>
+                    </div>
+                    {bookingData.selectedDriver && (
+                      <div className="md:col-span-2">
+                        <h4 className="text-sm font-medium text-gray-600 mb-1">Selected Driver</h4>
+                        <p className="text-lg font-semibold text-gray-900">{bookingData.selectedDriver.name}</p>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
-              
-              {/* Total Amount */}
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg font-semibold">Total Amount:</span>
-                  <span className="text-2xl font-bold text-blue-600">
-                    ₹{bookingData.selectedPlan?.price || 0}
-                  </span>
+
+              {/* Service Details */}
+              <div className="border-t border-blue-200 pt-6">
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-gray-600 mb-1">
+                    {bookingData.type === 'tour' ? 'Tour Package' : 'Vehicle'}
+                  </h4>
+                  <p className="text-lg font-semibold text-gray-900">{serviceName}</p>
+                </div>
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-gray-600 mb-1">Selected Plan</h4>
+                  <p className="text-lg font-semibold text-gray-900">{bookingData.selectedPlan?.name}</p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xl font-bold text-gray-800">Total Amount:</span>
+                  <span className="text-3xl font-bold text-blue-600">₹{totalAmount.toLocaleString()}</span>
                 </div>
               </div>
             </div>
-            
+
             {/* Payment Options */}
-            <div className="bg-gray-50 p-6 rounded-md border border-gray-200">
-              <h3 className="font-medium text-lg mb-4 flex items-center">
-                <CreditCard className="h-5 w-5 mr-2" />
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h3 className="font-bold text-xl text-gray-800 mb-5 flex items-center">
+                <CreditCard className="h-6 w-6 mr-3 text-gray-700" />
                 Payment Options
               </h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-start">
+
+              <div className="space-y-5">
+                <label
+                  htmlFor="minimum-payment"
+                  className="flex items-start cursor-pointer p-4 border border-gray-300 rounded-lg hover:border-blue-500 transition-colors"
+                >
                   <input
                     type="radio"
                     id="minimum-payment"
                     name="paymentOption"
                     value="minimum"
-                    checked={formData.paymentOption === 'minimum'}
-                    onChange={(e) => handleInputChange(e, 'payment')}
-                    className="mt-1 mr-2"
+                    checked={formData.paymentOption === "minimum"}
+                    onChange={(e) => handleInputChange(e, "payment")}
+                    className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500"
                   />
                   <div>
-                    <label htmlFor="minimum-payment" className="font-medium">
-                      Minimum Payment (10%)
-                    </label>
-                    <p className="text-sm text-gray-500">
-                      Pay ₹{Math.ceil((bookingData.selectedPlan?.price || 0) * 0.1)} now and the remaining amount during the service.
+                    <span className="font-semibold text-gray-800 text-lg">Minimum Payment (10%)</span>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Pay ₹{minimumPayment.toLocaleString()} now and the remaining amount during the service.
                     </p>
                   </div>
-                </div>
-                
-                <div className="flex items-start">
+                </label>
+
+                <label
+                  htmlFor="full-payment"
+                  className="flex items-start cursor-pointer p-4 border border-gray-300 rounded-lg hover:border-blue-500 transition-colors"
+                >
                   <input
                     type="radio"
                     id="full-payment"
                     name="paymentOption"
                     value="full"
-                    checked={formData.paymentOption === 'full'}
-                    onChange={(e) => handleInputChange(e, 'payment')}
-                    className="mt-1 mr-2"
+                    checked={formData.paymentOption === "full"}
+                    onChange={(e) => handleInputChange(e, "payment")}
+                    className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500"
                   />
                   <div>
-                    <label htmlFor="full-payment" className="font-medium">
-                      Full Payment
-                    </label>
-                    <p className="text-sm text-gray-500">
-                      Pay ₹{bookingData.selectedPlan?.price || 0} now.
-                    </p>
+                    <span className="font-semibold text-gray-800 text-lg">Full Payment</span>
+                    <p className="text-sm text-gray-600 mt-1">Pay ₹{totalAmount.toLocaleString()} now.</p>
                   </div>
-                </div>
+                </label>
               </div>
             </div>
           </div>
-        );
-      
+        )
+
       default:
-        return <div>Unknown step</div>;
+        return <div>Unknown step</div>
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">Complete Your Booking</h1>
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
               {/* Progress Indicator */}
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center justify-between mb-10 relative">
                 {[
-                  { step: 1, label: 'Basic Details' },
-                  { step: 2, label: 'Passenger Details' },
-                  { step: 3, label: 'Review & Payment' }
-                ].map((step) => (
-                  <div key={step.step} className="flex flex-col items-center">
-                    <div 
-                      className={`w-8 h-8 flex items-center justify-center rounded-full font-medium ${
-                        currentStep === step.step
-                          ? 'bg-blue-600 text-white'
-                          : currentStep > step.step
-                          ? 'bg-green-500 text-white'
-                          : 'bg-gray-200 text-gray-600'
-                      }`}
-                    >
-                      {currentStep > step.step ? (
-                        <CheckCircle className="h-5 w-5" />
-                      ) : (
-                        step.step
-                      )}
+                  { step: 1, label: "Basic Details" },
+                  { step: 2, label: "Passenger Details" },
+                  { step: 3, label: "Review & Payment" },
+                ].map((stepItem, index) => (
+                  <React.Fragment key={stepItem.step}>
+                    <div className="flex flex-col items-center flex-1 z-10">
+                      <div
+                        className={`w-10 h-10 flex items-center justify-center rounded-full font-semibold text-lg transition-all duration-300 ease-in-out ${
+                          currentStep === stepItem.step
+                            ? "bg-blue-600 text-white shadow-lg"
+                            : currentStep > stepItem.step
+                              ? "bg-green-500 text-white"
+                              : "bg-gray-200 text-gray-600"
+                        }`}
+                      >
+                        {currentStep > stepItem.step ? <CheckCircle className="h-6 w-6" /> : stepItem.step}
+                      </div>
+                      <span
+                        className={`mt-3 text-sm text-center ${
+                          currentStep === stepItem.step ? "text-blue-700 font-semibold" : "text-gray-600"
+                        }`}
+                      >
+                        {stepItem.label}
+                      </span>
                     </div>
-                    <span 
-                      className={`mt-2 text-sm ${
-                        currentStep === step.step 
-                          ? 'text-blue-600 font-medium' 
-                          : 'text-gray-500'
-                      }`}
-                    >
-                      {step.label}
-                    </span>
-                  </div>
+                    {index < 2 && (
+                      <div
+                        className={`absolute top-5 h-0.5 w-[calc(50%-4rem)] transition-all duration-300 ease-in-out ${
+                          currentStep > stepItem.step ? "bg-green-500" : "bg-gray-200"
+                        }`}
+                        style={{ left: `${(index + 0.5) * (100 / 3)}%`, transform: "translateX(-50%)" }}
+                      ></div>
+                    )}
+                  </React.Fragment>
                 ))}
               </div>
-              
+
               {/* Form Content */}
-              <div className="mb-8">
-                {renderStep()}
-              </div>
-              
+              <div className="mb-8">{renderStep()}</div>
+
               {/* Navigation Buttons */}
-              <div className="flex justify-between pt-4 border-t border-gray-200">
+              <div className="flex justify-between pt-6 border-t border-gray-200">
                 {currentStep > 1 ? (
                   <button
                     onClick={prevStep}
-                    className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                    className="flex items-center px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium"
                   >
-                    <ChevronLeft className="w-5 h-5 mr-1" />
+                    <ChevronLeft className="w-5 h-5 mr-2" />
                     Back
                   </button>
                 ) : (
-                  <div></div>
+                  <div />
                 )}
-                
+
                 {currentStep < 3 ? (
                   <button
                     onClick={nextStep}
-                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold shadow-md"
                   >
                     Next
-                    <ChevronRight className="w-5 h-5 ml-1" />
+                    <ChevronRight className="w-5 h-5 ml-2" />
                   </button>
                 ) : (
                   <button
                     onClick={handleFinalSubmit}
-                    className="flex items-center px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                    className="flex items-center px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-semibold shadow-md"
                   >
                     Confirm Booking
-                    <CheckCircle className="w-5 h-5 ml-1" />
+                    <CheckCircle className="w-5 h-5 ml-2" />
                   </button>
                 )}
               </div>
             </div>
           </div>
-          
+
           {/* Right Column - Service Summary */}
           <div className="lg:col-span-1">
             <ServiceSummaryCard bookingData={bookingData} />
@@ -671,7 +878,7 @@ const BookingForm = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BookingForm;
+export default BookingForm

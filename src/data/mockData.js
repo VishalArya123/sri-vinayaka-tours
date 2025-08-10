@@ -26,51 +26,86 @@ export const tourPackages = [
     id: 1,
     title: "Hyderabad City Tour",
     location: "Telangana",
-    duration: "1 Day & 0 Nights",
+    duration: "2 Day & 0 Nights",
     rating: 4.8,
+    reviewCount: 245,
     price: 350,
     originalPrice: 2500,
-    description: "A Hyderabad city tour offers a blend of historical monuments like Charminar and Golconda Fort, cultural experiences, and modern attractions.",
-    images: [
-      "https://srivinayakatours.com/thumbnail/buddha_banner.webp",
-      "https://srivinayakatours.com/thumbnail/Golconda_Fort.webp",
-      "https://srivinayakatours.com/thumbnail/Charminar.webp"
-    ],
+    description:
+      "A Hyderabad city tour offers a blend of historical monuments like Charminar and Golconda Fort, cultural experiences, and modern attractions.",
+    images:  [
+    "https://picsum.photos/id/1018/800/600",
+    "https://picsum.photos/id/1015/800/600",
+    "https://picsum.photos/id/1019/800/600",
+    "https://picsum.photos/id/1020/800/600",
+    "https://picsum.photos/id/1021/800/600",
+  ],
     plans: [
-      { id: "5-seater", name: "5-Seater Group", price: 350, maxPersons: 5 },
-      { id: "7-seater", name: "7-Seater Group", price: 500, maxPersons: 7 },
-      { id: "individual", name: "Individual", price: 350, maxPersons: 1 }
+      { id: "5-seater", name: "5-Seater Group", price: 350, maxPersons: 5, description: "Perfect for small families" },
+      { id: "7-seater", name: "7-Seater Group", price: 500, maxPersons: 7, description: "Ideal for larger groups" },
+      { id: "individual", name: "Individual", price: 350, maxPersons: 1, description: "Solo traveler special" },
     ],
     inclusions: [
       "Bus transportation for pickup, drop-off, and sightseeing",
-      "Sightseeing of all places mentioned in the itinerary"
+      "Sightseeing of all places mentioned in the itinerary",
+      "Professional tour guide",
+      "Complimentary water bottles",
     ],
     exclusions: [
       "Entry tickets to attractions",
       "Food and beverages",
       "Personal expenses",
-      "Any activities not mentioned in the itinerary"
+      "Any activities not mentioned in the itinerary",
     ],
     itinerary: [
       {
         day: "Day 1",
         title: "Hyderabad Local Sightseeing",
         places: [
-          { name: "Birla Mandir", type: "visit", entryFee: { adult: 0, child: 0 } },
-          { name: "Charminar (No Climbing)", type: "visit" },
-          { name: "Chowmohalla Palace", type: "visit", entryFee: { adult: 100, child: 40 } },
-          { name: "HEH Nizam Museum", type: "visit", entryFee: { adult: 125, child: 0 } },
-          { name: "Salarjung Museum", type: "visit", entryFee: { adult: 50, child: 20 } },
-          { name: "Golconda Fort", type: "visit", entryFee: { adult: 25, child: 0 } },
-          { name: "Hyderabad History in 3D", type: "visit", entryFee: { adult: 130, child: 100 } },
-          { name: "NTR Garden", type: "visit", entryFee: { adult: 20, child: 10 } },
-          { name: "Dr. B R Ambedkar Statue", type: "drive" },
-          { name: "Lumbini Park", type: "drive" },
-          { name: "Hussain Sagar", type: "drive" }
-        ]
-      }
+          { name: "Birla Mandir", type: "visit", entryFee: { adult: 0, child: 0 }, duration: "45 mins" },
+          { name: "Charminar (No Climbing)", type: "visit", duration: "30 mins" },
+          { name: "Chowmohalla Palace", type: "visit", entryFee: { adult: 100, child: 40 }, duration: "1 hour" },
+          { name: "HEH Nizam Museum", type: "visit", entryFee: { adult: 125, child: 0 }, duration: "1 hour" },
+          { name: "Salarjung Museum", type: "visit", entryFee: { adult: 50, child: 20 }, duration: "1.5 hours" },
+          { name: "Golconda Fort", type: "visit", entryFee: { adult: 25, child: 0 }, duration: "2 hours" },
+          { name: "Hyderabad History in 3D", type: "visit", entryFee: { adult: 130, child: 100 }, duration: "45 mins" },
+          { name: "NTR Garden", type: "visit", entryFee: { adult: 20, child: 10 }, duration: "1 hour" },
+          { name: "Dr. B R Ambedkar Statue", type: "drive", duration: "15 mins" },
+          { name: "Lumbini Park", type: "drive", duration: "20 mins" },
+          { name: "Hussain Sagar", type: "drive", duration: "30 mins" },
+        ],
+      },
+      {
+        day: "Day 2",
+        title: "Hyderabad Local Sightseeing",
+        places: [
+          { name: "Birla Mandir", type: "visit", entryFee: { adult: 0, child: 0 }, duration: "45 mins" },
+          { name: "Charminar (No Climbing)", type: "visit", duration: "30 mins" },
+          { name: "Chowmohalla Palace", type: "visit", entryFee: { adult: 100, child: 40 }, duration: "1 hour" },
+          { name: "HEH Nizam Museum", type: "visit", entryFee: { adult: 125, child: 0 }, duration: "1 hour" },
+          { name: "Salarjung Museum", type: "visit", entryFee: { adult: 50, child: 20 }, duration: "1.5 hours" },
+          { name: "Golconda Fort", type: "visit", entryFee: { adult: 25, child: 0 }, duration: "2 hours" },
+          { name: "Hyderabad History in 3D", type: "visit", entryFee: { adult: 130, child: 100 }, duration: "45 mins" },
+          { name: "NTR Garden", type: "visit", entryFee: { adult: 20, child: 10 }, duration: "1 hour" },
+          { name: "Dr. B R Ambedkar Statue", type: "drive", duration: "15 mins" },
+          { name: "Lumbini Park", type: "drive", duration: "20 mins" },
+          { name: "Hussain Sagar", type: "drive", duration: "30 mins" },
+        ],
+      },
     ],
-    category: "cultural"
+    category: "cultural",
+    highlights: [
+      "Experience serene spiritual views from a beautiful hilltop temple",
+      "Explore the lavish history of the Nizams at Chowmahalla Palace",
+      "Discover the ancient grandeur of Golconda Fort",
+      "World-class artifacts at Salarjung Museum",
+      "Enjoy leisure at NTR Gardens and 3D history show",
+    ],
+    bestTime: "October to March",
+    difficulty: "Easy",
+    groupSize: "2-15 people",
+    languages: ["English", "Hindi", "Telugu"],
+    cancellationPolicy: "Free cancellation up to 24 hours before the tour",
   },
   {
     id: 2,
@@ -78,39 +113,46 @@ export const tourPackages = [
     location: "Telangana",
     duration: "1 Day & 0 Nights",
     rating: 4.7,
+    reviewCount: 180,
     price: 350,
     originalPrice: 2500,
-    description: "Ramoji Film City is the world's largest film studio complex and a popular tourist destination in Hyderabad, India.",
-    images: [
-      "https://srivinayakatours.com/thumbnail/ramoji_film_city.webp"
-    ],
+    description:
+      "Ramoji Film City is the world's largest film studio complex and a popular tourist destination in Hyderabad, India.",
+    images:  [
+    "https://picsum.photos/id/1022/800/600",
+    "https://picsum.photos/id/1023/800/600",
+    "https://picsum.photos/id/1024/800/600",
+  ],
     plans: [
-      { id: "5-seater", name: "5-Seater Group", price: 350, maxPersons: 5 },
-      { id: "7-seater", name: "7-Seater Group", price: 500, maxPersons: 7 },
-      { id: "individual", name: "Individual", price: 350, maxPersons: 1 }
+      { id: "5-seater", name: "5-Seater Group", price: 350, maxPersons: 5, description: "Perfect for small families" },
+      { id: "7-seater", name: "7-Seater Group", price: 500, maxPersons: 7, description: "Ideal for larger groups" },
+      { id: "individual", name: "Individual", price: 350, maxPersons: 1, description: "Solo traveler special" },
     ],
-    inclusions: [
-      "Transportation to Ramoji Film City",
-      "Entry tickets included",
-      "Guided tour"
-    ],
-    exclusions: [
-      "Food and beverages",
-      "Personal expenses",
-      "Optional activities"
-    ],
+    inclusions: ["Transportation to Ramoji Film City", "Entry tickets included", "Guided tour"],
+    exclusions: ["Food and beverages", "Personal expenses", "Optional activities"],
     itinerary: [
       {
         day: "Day 1",
         title: "Ramoji Film City Tour",
         places: [
-          { name: "Film Studio Tour", type: "visit" },
-          { name: "Theme Park", type: "visit" },
-          { name: "Live Shows", type: "visit" }
-        ]
-      }
+          { name: "Film Studio Tour", type: "visit", duration: "3 hours" },
+          { name: "Theme Park", type: "visit", duration: "2 hours" },
+          { name: "Live Shows", type: "visit", duration: "1.5 hours" },
+        ],
+      },
     ],
-    category: "entertainment"
+    category: "entertainment",
+    highlights: [
+      "Explore the world's largest film studio complex",
+      "Enjoy thrilling rides and attractions at the theme park",
+      "Witness spectacular live shows and performances",
+      "Experience cinematic magic firsthand",
+    ],
+    bestTime: "October to March",
+    difficulty: "Easy",
+    groupSize: "1-20 people",
+    languages: ["English", "Hindi", "Telugu"],
+    cancellationPolicy: "Free cancellation up to 48 hours before the tour",
   },
   {
     id: 3,
@@ -118,39 +160,46 @@ export const tourPackages = [
     location: "Telangana",
     duration: "1 Day & 0 Nights",
     rating: 4.9,
+    reviewCount: 310,
     price: 875,
     originalPrice: 1000,
-    description: "Wonderla Amusement Park in Hyderabad offers a mix of water rides, roller coasters, and attractions for kids.",
+    description:
+      "Wonderla Amusement Park in Hyderabad offers a mix of water rides, roller coasters, and attractions for kids.",
     images: [
-      "https://srivinayakatours.com/thumbnail/wonderla.jpg"
-    ],
+    "https://picsum.photos/id/1025/800/600",
+    "https://picsum.photos/id/1026/800/600",
+    "https://picsum.photos/id/1027/800/600",
+  ],
     plans: [
-      { id: "5-seater", name: "5-Seater Group", price: 875, maxPersons: 5 },
-      { id: "7-seater", name: "7-Seater Group", price: 1200, maxPersons: 7 },
-      { id: "individual", name: "Individual", price: 875, maxPersons: 1 }
+      { id: "5-seater", name: "5-Seater Group", price: 875, maxPersons: 5, description: "Perfect for small families" },
+      { id: "7-seater", name: "7-Seater Group", price: 1200, maxPersons: 7, description: "Ideal for larger groups" },
+      { id: "individual", name: "Individual", price: 875, maxPersons: 1, description: "Solo traveler special" },
     ],
-    inclusions: [
-      "Transportation to Wonderla",
-      "Entry tickets included",
-      "All rides access"
-    ],
-    exclusions: [
-      "Food and beverages",
-      "Personal expenses",
-      "Locker charges"
-    ],
+    inclusions: ["Transportation to Wonderla", "Entry tickets included", "All rides access"],
+    exclusions: ["Food and beverages", "Personal expenses", "Locker charges"],
     itinerary: [
       {
         day: "Day 1",
         title: "Wonderla Adventure",
         places: [
-          { name: "Water Rides", type: "visit" },
-          { name: "Roller Coasters", type: "visit" },
-          { name: "Kids Zone", type: "visit" }
-        ]
-      }
+          { name: "Water Rides", type: "visit", duration: "3 hours" },
+          { name: "Roller Coasters", type: "visit", duration: "2 hours" },
+          { name: "Kids Zone", type: "visit", duration: "1.5 hours" },
+        ],
+      },
     ],
-    category: "entertainment"
+    category: "entertainment",
+    highlights: [
+      "Enjoy thrilling water rides and slides",
+      "Experience adrenaline-pumping roller coasters",
+      "Dedicated fun zone for kids",
+      "Full-day entertainment for all ages",
+    ],
+    bestTime: "All year round (avoid peak summer afternoons)",
+    difficulty: "Easy",
+    groupSize: "1-10 people",
+    languages: ["English", "Hindi", "Telugu"],
+    cancellationPolicy: "No cancellation within 24 hours of the tour",
   },
   {
     id: 4,
@@ -158,39 +207,46 @@ export const tourPackages = [
     location: "Telangana",
     duration: "1 Day & 0 Nights",
     rating: 4.6,
+    reviewCount: 150,
     price: 1125,
     originalPrice: 2500,
-    description: "The Statue of Equality features a vast golden monument dedicated to the medieval guru Sri Ramanuja, with a meditation hall at its base.",
-    images: [
-      "https://srivinayakatours.com/thumbnail/statue_of_equality_tour.webp"
-    ],
+    description:
+      "The Statue of Equality features a vast golden monument dedicated to the medieval guru Sri Ramanuja, with a meditation hall at its base.",
+    images:  [
+    "https://picsum.photos/id/1028/800/600",
+    "https://picsum.photos/id/1029/800/600",
+    "https://picsum.photos/id/1030/800/600",
+  ],
     plans: [
-      { id: "5-seater", name: "5-Seater Group", price: 1125, maxPersons: 5 },
-      { id: "7-seater", name: "7-Seater Group", price: 1600, maxPersons: 7 },
-      { id: "individual", name: "Individual", price: 1125, maxPersons: 1 }
+      { id: "5-seater", name: "5-Seater Group", price: 1125, maxPersons: 5, description: "Perfect for small families" },
+      { id: "7-seater", name: "7-Seater Group", price: 1600, maxPersons: 7, description: "Ideal for larger groups" },
+      { id: "individual", name: "Individual", price: 1125, maxPersons: 1, description: "Solo traveler special" },
     ],
-    inclusions: [
-      "Transportation to Statue of Equality",
-      "Entry tickets included",
-      "Guided tour"
-    ],
-    exclusions: [
-      "Food and beverages",
-      "Personal expenses",
-      "Optional activities"
-    ],
+    inclusions: ["Transportation to Statue of Equality", "Entry tickets included", "Guided tour"],
+    exclusions: ["Food and beverages", "Personal expenses", "Optional activities"],
     itinerary: [
       {
         day: "Day 1",
         title: "Statue of Equality Visit",
         places: [
-          { name: "Statue viewing", type: "visit" },
-          { name: "Meditation Hall", type: "visit" },
-          { name: "Museum", type: "visit" }
-        ]
-      }
+          { name: "Statue viewing", type: "visit", duration: "1.5 hours" },
+          { name: "Meditation Hall", type: "visit", duration: "1 hour" },
+          { name: "Museum", type: "visit", duration: "1 hour" },
+        ],
+      },
     ],
-    category: "cultural"
+    category: "cultural",
+    highlights: [
+      "Visit the grand Statue of Equality",
+      "Experience tranquility in the meditation hall",
+      "Learn about Sri Ramanuja's life and teachings",
+      "Explore the museum and cultural exhibits",
+    ],
+    bestTime: "October to March",
+    difficulty: "Easy",
+    groupSize: "1-15 people",
+    languages: ["English", "Hindi", "Telugu"],
+    cancellationPolicy: "Free cancellation up to 24 hours before the tour",
   },
   {
     id: 5,
@@ -198,39 +254,46 @@ export const tourPackages = [
     location: "Telangana",
     duration: "1 Day & 0 Nights",
     rating: 4.8,
+    reviewCount: 90,
     price: 1125,
     originalPrice: 2000,
-    description: "Anantha Giri Hills is a scenic, forested peak in Telangana with nature trails, a historic temple, old caves, and lodging and dining options.",
-    images: [
-      "https://srivinayakatours.com/thumbnail/ananthagiri_hills_tour.webp"
-    ],
+    description:
+      "Anantha Giri Hills is a scenic, forested peak in Telangana with nature trails, a historic temple, old caves, and lodging and dining options.",
+    images:  [
+    "https://picsum.photos/id/1031/800/600",
+    "https://picsum.photos/id/1032/800/600",
+    "https://picsum.photos/id/1033/800/600",
+  ],
     plans: [
-      { id: "5-seater", name: "5-Seater Group", price: 1125, maxPersons: 5 },
-      { id: "7-seater", name: "7-Seater Group", price: 1600, maxPersons: 7 },
-      { id: "individual", name: "Individual", price: 1125, maxPersons: 1 }
+      { id: "5-seater", name: "5-Seater Group", price: 1125, maxPersons: 5, description: "Perfect for small families" },
+      { id: "7-seater", name: "7-Seater Group", price: 1600, maxPersons: 7, description: "Ideal for larger groups" },
+      { id: "individual", name: "Individual", price: 1125, maxPersons: 1, description: "Solo traveler special" },
     ],
-    inclusions: [
-      "Transportation to Anathagiri Hills",
-      "Nature trail guide",
-      "Temple visit"
-    ],
-    exclusions: [
-      "Food and beverages",
-      "Personal expenses",
-      "Adventure activities"
-    ],
+    inclusions: ["Transportation to Anathagiri Hills", "Nature trail guide", "Temple visit"],
+    exclusions: ["Food and beverages", "Personal expenses", "Adventure activities"],
     itinerary: [
       {
         day: "Day 1",
         title: "Anathagiri Hills Adventure",
         places: [
-          { name: "Nature Trails", type: "visit" },
-          { name: "Historic Temple", type: "visit" },
-          { name: "Ancient Caves", type: "visit" }
-        ]
-      }
+          { name: "Nature Trails", type: "visit", duration: "2 hours" },
+          { name: "Historic Temple", type: "visit", duration: "1 hour" },
+          { name: "Ancient Caves", type: "visit", duration: "1.5 hours" },
+        ],
+      },
     ],
-    category: "adventure"
+    category: "adventure",
+    highlights: [
+      "Trek through lush green nature trails",
+      "Visit an ancient and serene hilltop temple",
+      "Explore mysterious old caves",
+      "Enjoy panoramic views of the surrounding landscape",
+    ],
+    bestTime: "July to March",
+    difficulty: "Moderate",
+    groupSize: "2-10 people",
+    languages: ["English", "Hindi", "Telugu"],
+    cancellationPolicy: "Free cancellation up to 48 hours before the tour",
   },
   {
     id: 6,
@@ -238,39 +301,46 @@ export const tourPackages = [
     location: "Telangana",
     duration: "1 Day & 0 Nights",
     rating: 4.9,
+    reviewCount: 200,
     price: 1125,
     originalPrice: 2000,
-    description: "Yadagirigutta Sri Lakshmi Narasimha Swamy Devasthanam is a Dravidian-style Hindu temple atop a hill, featuring an ornate, towering gopuram entry gate.",
+    description:
+      "Yadagirigutta Sri Lakshmi Narasimha Swamy Devasthanam is a Dravidian-style Hindu temple atop a hill, featuring an ornate, towering gopuram entry gate.",
     images: [
-      "https://srivinayakatours.com/thumbnail/yadadri_tour.webp"
-    ],
+    "https://picsum.photos/id/1034/800/600",
+    "https://picsum.photos/id/1035/800/600",
+    "https://picsum.photos/id/1036/800/600",
+  ],
     plans: [
-      { id: "5-seater", name: "5-Seater Group", price: 1125, maxPersons: 5 },
-      { id: "7-seater", name: "7-Seater Group", price: 1600, maxPersons: 7 },
-      { id: "individual", name: "Individual", price: 1125, maxPersons: 1 }
+      { id: "5-seater", name: "5-Seater Group", price: 1125, maxPersons: 5, description: "Perfect for small families" },
+      { id: "7-seater", name: "7-Seater Group", price: 1600, maxPersons: 7, description: "Ideal for larger groups" },
+      { id: "individual", name: "Individual", price: 1125, maxPersons: 1, description: "Solo traveler special" },
     ],
-    inclusions: [
-      "Transportation to temple",
-      "Temple darshan",
-      "Guided tour"
-    ],
-    exclusions: [
-      "Special darshan tickets",
-      "Food and beverages",
-      "Personal expenses"
-    ],
+    inclusions: ["Transportation to temple", "Temple darshan", "Guided tour"],
+    exclusions: ["Special darshan tickets", "Food and beverages", "Personal expenses"],
     itinerary: [
       {
         day: "Day 1",
         title: "Yadagirigutta Temple Visit",
         places: [
-          { name: "Temple Darshan", type: "visit" },
-          { name: "Gopuram viewing", type: "visit" },
-          { name: "Temple complex tour", type: "visit" }
-        ]
-      }
+          { name: "Temple Darshan", type: "visit", duration: "2 hours" },
+          { name: "Gopuram viewing", type: "visit", duration: "30 mins" },
+          { name: "Temple complex tour", type: "visit", duration: "1 hour" },
+        ],
+      },
     ],
-    category: "temple"
+    category: "temple",
+    highlights: [
+      "Seek blessings at the ancient Sri Lakshmi Narasimha Swamy Devasthanam",
+      "Admire the intricate Dravidian architecture and towering gopuram",
+      "Experience spiritual tranquility atop the hill",
+      "Learn about the temple's rich history and legends",
+    ],
+    bestTime: "October to March",
+    difficulty: "Easy",
+    groupSize: "1-15 people",
+    languages: ["English", "Hindi", "Telugu"],
+    cancellationPolicy: "Free cancellation up to 24 hours before the tour",
   },
   {
     id: 7,
@@ -278,39 +348,46 @@ export const tourPackages = [
     location: "Andhra Pradesh",
     duration: "1 Day & 0 Nights",
     rating: 4.8,
+    reviewCount: 120,
     price: 2250,
     originalPrice: 3000,
-    description: "Srisailam is a pilgrimage town in Andhra Pradesh, India, known for its ancient Sri Mallikarjuna Jyotirlinga temple and scenic surroundings.",
+    description:
+      "Srisailam is a pilgrimage town in Andhra Pradesh, India, known for its ancient Sri Mallikarjuna Jyotirlinga temple and scenic surroundings.",
     images: [
-      "https://srivinayakatours.com/thumbnail/srisailam_tour_cover.webp"
-    ],
+    "https://picsum.photos/id/1037/800/600",
+    "https://picsum.photos/id/1038/800/600",
+    "https://picsum.photos/id/1039/800/600",
+  ],
     plans: [
-      { id: "5-seater", name: "5-Seater Group", price: 2250, maxPersons: 5 },
-      { id: "7-seater", name: "7-Seater Group", price: 3200, maxPersons: 7 },
-      { id: "individual", name: "Individual", price: 2250, maxPersons: 1 }
+      { id: "5-seater", name: "5-Seater Group", price: 2250, maxPersons: 5, description: "Perfect for small families" },
+      { id: "7-seater", name: "7-Seater Group", price: 3200, maxPersons: 7, description: "Ideal for larger groups" },
+      { id: "individual", name: "Individual", price: 2250, maxPersons: 1, description: "Solo traveler special" },
     ],
-    inclusions: [
-      "Transportation to Srisailam",
-      "Temple darshan",
-      "Scenic viewpoints"
-    ],
-    exclusions: [
-      "Special darshan tickets",
-      "Food and beverages",
-      "Personal expenses"
-    ],
+    inclusions: ["Transportation to Srisailam", "Temple darshan", "Scenic viewpoints"],
+    exclusions: ["Special darshan tickets", "Food and beverages", "Personal expenses"],
     itinerary: [
       {
         day: "Day 1",
         title: "Srisailam Pilgrimage",
         places: [
-          { name: "Mallikarjuna Temple", type: "visit" },
-          { name: "Krishna River view", type: "visit" },
-          { name: "Patala Ganga", type: "visit" }
-        ]
-      }
+          { name: "Mallikarjuna Temple", type: "visit", duration: "3 hours" },
+          { name: "Krishna River view", type: "visit", duration: "1 hour" },
+          { name: "Patala Ganga", type: "visit", duration: "1 hour" },
+        ],
+      },
     ],
-    category: "temple"
+    category: "temple",
+    highlights: [
+      "Visit one of the twelve Jyotirlinga shrines of Lord Shiva",
+      "Enjoy breathtaking views of the Krishna River",
+      "Descend to Patala Ganga for a holy dip",
+      "Experience the serene and spiritual atmosphere of Srisailam",
+    ],
+    bestTime: "October to March",
+    difficulty: "Moderate",
+    groupSize: "1-10 people",
+    languages: ["English", "Hindi", "Telugu"],
+    cancellationPolicy: "Free cancellation up to 48 hours before the tour",
   },
   {
     id: 8,
@@ -318,41 +395,49 @@ export const tourPackages = [
     location: "Telangana",
     duration: "1 Day & 0 Nights",
     rating: 4.9,
+    reviewCount: 190,
     price: 1125,
     originalPrice: 2000,
-    description: "Nagarjuna Sagar is known for its massive irrigation and power-generating dam, which is especially popular to visit during the monsoon season.",
+    description:
+      "Nagarjuna Sagar is known for its massive irrigation and power-generating dam, which is especially popular to visit during the monsoon season.",
     images: [
-      "https://srivinayakatours.com/thumbnail/sagar_tour.webp"
-    ],
+    "https://picsum.photos/id/1040/800/600",
+    "https://picsum.photos/id/1041/800/600",
+    "https://picsum.photos/id/1042/800/600",
+  ],
     plans: [
-      { id: "5-seater", name: "5-Seater Group", price: 1125, maxPersons: 5 },
-      { id: "7-seater", name: "7-Seater Group", price: 1600, maxPersons: 7 },
-      { id: "individual", name: "Individual", price: 1125, maxPersons: 1 }
+      { id: "5-seater", name: "5-Seater Group", price: 1125, maxPersons: 5, description: "Perfect for small families" },
+      { id: "7-seater", name: "7-Seater Group", price: 1600, maxPersons: 7, description: "Ideal for larger groups" },
+      { id: "individual", name: "Individual", price: 1125, maxPersons: 1, description: "Solo traveler special" },
     ],
-    inclusions: [
-      "Transportation to dam",
-      "Dam visit",
-      "Boat ride (if available)"
-    ],
-    exclusions: [
-      "Food and beverages",
-      "Personal expenses",
-      "Additional activities"
-    ],
+    inclusions: ["Transportation to dam", "Dam visit", "Boat ride (if available)"],
+    exclusions: ["Food and beverages", "Personal expenses", "Additional activities"],
     itinerary: [
       {
         day: "Day 1",
         title: "Nagarjuna Sagar Dam Visit",
         places: [
-          { name: "Dam viewpoint", type: "visit" },
-          { name: "Nagarjunakonda Island", type: "visit" },
-          { name: "Museum visit", type: "visit" }
-        ]
-      }
+          { name: "Dam viewpoint", type: "visit", duration: "1 hour" },
+          { name: "Nagarjunakonda Island", type: "visit", duration: "2 hours" },
+          { name: "Museum visit", type: "visit", duration: "1 hour" },
+        ],
+      },
     ],
-    category: "dams"
-  }
-];
+    category: "dams",
+    highlights: [
+      "Witness the grandeur of Nagarjuna Sagar Dam",
+      "Explore the historical and archaeological sites on Nagarjunakonda Island",
+      "Enjoy a scenic boat ride on the reservoir",
+      "Visit the museum showcasing Buddhist relics",
+    ],
+    bestTime: "September to March",
+    difficulty: "Easy",
+    groupSize: "1-15 people",
+    languages: ["English", "Hindi", "Telugu"],
+    cancellationPolicy: "Free cancellation up to 24 hours before the tour",
+  },
+]
+
 
 export const vehicles = {
   cars: [

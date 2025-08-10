@@ -1,62 +1,117 @@
-// src/utils/storage.js
+import { useState, useEffect } from 'react';
 
-export const storage = {
-  // Save data to localStorage
-  save: (key, data) => {
-    try {
-      localStorage.setItem(key, JSON.stringify(data));
-      return true;
-    } catch (error) {
-      console.error('Error saving to localStorage:', error);
-      return false;
-    }
-  },
+const STORAGE_KEY_PREFIX = "travel_app_";
 
-  // Get data from localStorage
-  get: (key, defaultValue = null) => {
+// Custom hook for reactive storage
+export const useStorage = (key, defaultValue = null) => {
+  const [value, setValue] = useState(() => {
     try {
-      const item = localStorage.getItem(key);
+      const item = localStorage.getItem(`${STORAGE_KEY_PREFIX}${key}`);
       return item ? JSON.parse(item) : defaultValue;
     } catch (error) {
-      console.error('Error getting from localStorage:', error);
+      console.error(`Error reading localStorage key "${key}":`, error);
       return defaultValue;
     }
+  });
+
+  const setStoredValue = (newValue) => {
+    try {
+      setValue(newValue);
+      localStorage.setItem(`${STORAGE_KEY_PREFIX}${key}`, JSON.stringify(newValue));
+      // Dispatch custom event for cross-component updates
+      window.dispatchEvent(new CustomEvent('storage-update', {
+        detail: { key, value: newValue }
+      }));
+    } catch (error) {
+      console.error(`Error setting localStorage key "${key}":`, error);
+    }
+  };
+
+  // Listen for storage changes
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.detail?.key === key) {
+        setValue(e.detail.value);
+      }
+    };
+
+    window.addEventListener('storage-update', handleStorageChange);
+    return () => window.removeEventListener('storage-update', handleStorageChange);
+  }, [key]);
+
+  return [value, setStoredValue];
+};
+
+export const storage = {
+  // Helper to safely parse JSON
+  _safeParse: (key) => {
+    try {
+      const item = localStorage.getItem(`${STORAGE_KEY_PREFIX}${key}`);
+      return item ? JSON.parse(item) : null;
+    } catch (e) {
+      console.error(`Error parsing localStorage item "${key}":`, e);
+      return null;
+    }
   },
 
-  // Remove data from localStorage
+  // Helper to safely stringify and set JSON
+  _safeSet: (key, value) => {
+    try {
+      localStorage.setItem(`${STORAGE_KEY_PREFIX}${key}`, JSON.stringify(value));
+      // Dispatch update event
+      window.dispatchEvent(new CustomEvent('storage-update', {
+        detail: { key, value }
+      }));
+      return true;
+    } catch (e) {
+      console.error(`Error setting localStorage item "${key}":`, e);
+      return false;
+    }
+  },
+
+  // Save any data
+  save: (key, data) => storage._safeSet(key, data),
+
+  // Get any data
+  get: (key) => storage._safeParse(key),
+
+  // Remove data
   remove: (key) => {
     try {
-      localStorage.removeItem(key);
+      localStorage.removeItem(`${STORAGE_KEY_PREFIX}${key}`);
+      window.dispatchEvent(new CustomEvent('storage-update', {
+        detail: { key, value: null }
+      }));
       return true;
     } catch (error) {
-      console.error('Error removing from localStorage:', error);
+      console.error("Error removing from localStorage:", error);
       return false;
     }
   },
 
-  // Clear all localStorage
+  // Clear all data
   clear: () => {
     try {
-      localStorage.clear();
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(STORAGE_KEY_PREFIX)) {
+          localStorage.removeItem(key);
+        }
+      }
+      window.dispatchEvent(new CustomEvent('storage-update', {
+        detail: { key: 'clear', value: null }
+      }));
       return true;
     } catch (error) {
-      console.error('Error clearing localStorage:', error);
+      console.error("Error clearing localStorage:", error);
       return false;
     }
   },
 
-  // User Management Functions
-  saveUser: (userData) => {
-    return storage.save('user', {
-      ...userData,
-      lastLogin: new Date().toISOString(),
-      id: userData.id || Date.now()
-    });
-  },
-
-  getUser: () => {
-    return storage.get('user', null);
-  },
+  // User Management
+  saveUser: (userData) => storage._safeSet("userProfile", userData),
+  
+  getUser: () => storage._safeParse("userProfile"),
 
   updateUser: (updates) => {
     const currentUser = storage.getUser();
@@ -64,299 +119,229 @@ export const storage = {
       const updatedUser = {
         ...currentUser,
         ...updates,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       };
-      return storage.save('user', updatedUser);
+      return storage.saveUser(updatedUser);
     }
     return false;
   },
 
   removeUser: () => {
-    return storage.remove('user');
+    localStorage.removeItem(`${STORAGE_KEY_PREFIX}userProfile`);
+    localStorage.removeItem(`${STORAGE_KEY_PREFIX}userPreferences`);
   },
 
-  isUserLoggedIn: () => {
-    const user = storage.getUser();
-    return user !== null;
+  getUserProfile: () => {
+    return storage._safeParse("userProfile") || {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      gender: "",
+      profileImage: "",
+      preferences: {
+        theme: "light",
+        notifications: true,
+      },
+    };
   },
 
-  // User Preferences
-  saveUserPreferences: (preferences) => {
-    const currentPrefs = storage.getUserPreferences();
-    return storage.save('userPreferences', {
-      ...currentPrefs,
-      ...preferences,
-      updatedAt: new Date().toISOString()
-    });
-  },
-
-  getUserPreferences: () => {
-    return storage.get('userPreferences', {
-      theme: 'light',
-      language: 'en',
-      currency: 'INR',
-      notifications: true,
-      emailUpdates: true
-    });
-  },
-
-  // Profile Management
-  saveUserProfile: (profileData) => {
-    const user = storage.getUser();
+  // Authentication
+  login: (email, password) => {
+    const users = storage._safeParse("registeredUsers") || [];
+    const user = users.find((u) => u.email === email && u.password === password);
     if (user) {
-      const updatedUser = {
-        ...user,
-        profile: {
-          ...user.profile,
-          ...profileData,
-          lastUpdated: new Date().toISOString()
-        }
-      };
-      return storage.save('user', updatedUser);
+      storage._safeSet("isAuthenticated", true);
+      storage.saveUser(user);
+      return true;
     }
     return false;
   },
 
-  getUserProfile: () => {
-    const user = storage.getUser();
-    return user?.profile || {
-      name: '',
-      email: '',
-      phone: '',
-      address: '',
-      profileImage: '',
-      dateOfBirth: '',
-      gender: '',
-      emergencyContact: ''
-    };
+  register: (userData) => {
+    const users = storage._safeParse("registeredUsers") || [];
+    if (users.some((u) => u.email === userData.email)) {
+      return { success: false, message: "Email already registered." };
+    }
+    users.push(userData);
+    const success = storage._safeSet("registeredUsers", users);
+    if (success) {
+      storage.saveUser(userData);
+      storage._safeSet("isAuthenticated", true);
+      return { success: true, message: "Registration successful!" };
+    }
+    return { success: false, message: "Failed to register user." };
   },
 
-  // Booking Management
-  saveBookingData: (bookingData) => {
-    const bookingId = `booking_${Date.now()}`;
-    const booking = {
-      ...bookingData,
-      id: bookingId,
-      createdAt: new Date().toISOString(),
-      status: 'pending'
-    };
-    return storage.save('currentBooking', booking);
+  logout: () => {
+    localStorage.removeItem(`${STORAGE_KEY_PREFIX}isAuthenticated`);
+    localStorage.removeItem(`${STORAGE_KEY_PREFIX}userProfile`);
+    localStorage.removeItem(`${STORAGE_KEY_PREFIX}wishlist`);
+    localStorage.removeItem(`${STORAGE_KEY_PREFIX}bookingHistory`);
+    // localStorage.removeItem(`${STORAGE_KEY_PREFIX}recentViews`);
+    localStorage.removeItem(`${STORAGE_KEY_PREFIX}searchHistory`);
+    window.dispatchEvent(new CustomEvent('storage-update', {
+      detail: { key: 'logout', value: null }
+    }));
   },
 
-  getBookingData: () => {
-    return storage.get('currentBooking', null);
-  },
+  isAuthenticated: () => storage._safeParse("isAuthenticated") === true,
 
-  clearBookingData: () => {
-    return storage.remove('currentBooking');
-  },
-
-  // Booking History
-  saveCompletedBooking: (bookingData) => {
-    const bookings = storage.getBookingHistory();
-    const completedBooking = {
-      ...bookingData,
-      completedAt: new Date().toISOString(),
-      status: 'completed'
-    };
-    bookings.unshift(completedBooking);
-    return storage.save('bookingHistory', bookings.slice(0, 50)); // Keep only last 50 bookings
-  },
-
-  getBookingHistory: () => {
-    return storage.get('bookingHistory', []);
-  },
-
-  updateBookingStatus: (bookingId, status) => {
-    const bookings = storage.getBookingHistory();
-    const updatedBookings = bookings.map(booking => 
-      booking.id === bookingId 
-        ? { ...booking, status, lastUpdated: new Date().toISOString() }
-        : booking
-    );
-    return storage.save('bookingHistory', updatedBookings);
-  },
+  isUserLoggedIn: () => storage.isAuthenticated(),
 
   // Wishlist Management
-  saveWishlist: (wishlist) => {
-    return storage.save('wishlist', wishlist.map(item => ({
-      ...item,
-      addedAt: item.addedAt || new Date().toISOString()
-    })));
-  },
-
-  getWishlist: () => {
-    return storage.get('wishlist', []);
-  },
+  getWishlist: () => storage._safeParse("wishlist") || [],
 
   addToWishlist: (item) => {
     const wishlist = storage.getWishlist();
-    const exists = wishlist.find(w => w.id === item.id && w.type === item.type);
-    if (!exists) {
-      const wishlistItem = {
-        ...item,
-        addedAt: new Date().toISOString(),
-        wishlistId: Date.now()
-      };
-      wishlist.unshift(wishlistItem);
-      return storage.saveWishlist(wishlist);
+    if (!wishlist.some((w) => w.id === item.id && w.type === item.type)) {
+      wishlist.push({ ...item, addedAt: new Date().toISOString() });
+      return storage._safeSet("wishlist", wishlist);
     }
     return false;
   },
 
   removeFromWishlist: (id, type) => {
-    const wishlist = storage.getWishlist();
-    const updatedWishlist = wishlist.filter(w => !(w.id === id && w.type === type));
-    return storage.saveWishlist(updatedWishlist);
+    let wishlist = storage.getWishlist();
+    const initialLength = wishlist.length;
+    wishlist = wishlist.filter((item) => !(item.id === id && item.type === type));
+    if (wishlist.length < initialLength) {
+      return storage._safeSet("wishlist", wishlist);
+    }
+    return false;
   },
 
-  clearWishlist: () => {
-    return storage.save('wishlist', []);
+  clearWishlist: () => storage._safeSet("wishlist", []),
+
+  // Booking Data Management
+  saveBookingData: (bookingData) => {
+    return storage._safeSet("currentBooking", bookingData);
   },
 
-  // Search History
-  saveSearchQuery: (query) => {
-    const searches = storage.getSearchHistory();
-    const newSearch = {
-      query: query.trim(),
-      timestamp: new Date().toISOString(),
-      id: Date.now()
+  getBookingData: () => {
+    return storage._safeParse("currentBooking");
+  },
+
+  clearBookingData: () => {
+    localStorage.removeItem(`${STORAGE_KEY_PREFIX}currentBooking`);
+    return true;
+  },
+
+  // Completed Booking Management  
+  saveCompletedBooking: (bookingData) => {
+    const bookings = storage.getBookingHistory();
+    const newBooking = {
+      ...bookingData,
+      id: Date.now().toString(),
+      date: new Date().toISOString(),
+      status: "confirmed"
     };
-    
-    // Remove if already exists and add to beginning
-    const filteredSearches = searches.filter(s => s.query !== newSearch.query);
-    filteredSearches.unshift(newSearch);
-    
-    return storage.save('searchHistory', filteredSearches.slice(0, 20)); // Keep only last 20 searches
+    bookings.push(newBooking);
+    return storage._safeSet("bookingHistory", bookings);
   },
 
-  getSearchHistory: () => {
-    return storage.get('searchHistory', []);
+  // Booking History
+  getBookingHistory: () => storage._safeParse("bookingHistory") || [],
+
+  addBooking: (booking) => {
+    const bookings = storage.getBookingHistory();
+    bookings.push({ 
+      ...booking, 
+      id: Date.now().toString(), 
+      date: new Date().toISOString(), 
+      status: "confirmed" 
+    });
+    return storage._safeSet("bookingHistory", bookings);
   },
 
-  clearSearchHistory: () => {
-    return storage.save('searchHistory', []);
+  updateBookingStatus: (bookingId, status) => {
+    const bookings = storage.getBookingHistory();
+    const updatedBookings = bookings.map((booking) =>
+      booking.id === bookingId 
+        ? { ...booking, status, lastUpdated: new Date().toISOString() } 
+        : booking
+    );
+    return storage._safeSet("bookingHistory", updatedBookings);
   },
 
   // Recent Views
-  addToRecentViews: (item) => {
-    const recentViews = storage.getRecentViews();
-    const newView = {
-      ...item,
-      viewedAt: new Date().toISOString(),
-      id: item.id,
-      type: item.type
+  // getRecentViews: () => storage._safeParse("recentViews") || [],
+
+  // addRecentView: (item) => {
+  //   let recentViews = storage.getRecentViews();
+  //   recentViews = recentViews.filter((view) => !(view.id === item.id && view.type === item.type));
+  //   recentViews.unshift({ ...item, viewedAt: new Date().toISOString() });
+  //   recentViews = recentViews.slice(0, 10);
+  //   return storage._safeSet("recentViews", recentViews);
+  // },
+
+  // Search History
+  getSearchHistory: () => storage._safeParse("searchHistory") || [],
+
+  addSearchQuery: (query) => {
+    let searchHistory = storage.getSearchHistory();
+    const newSearch = { 
+      id: Date.now().toString(), 
+      query, 
+      timestamp: new Date().toISOString() 
     };
-    
-    // Remove if already exists and add to beginning
-    const filteredViews = recentViews.filter(v => !(v.id === item.id && v.type === item.type));
-    filteredViews.unshift(newView);
-    
-    return storage.save('recentViews', filteredViews.slice(0, 15)); // Keep only last 15 views
+    searchHistory = searchHistory.filter((s) => s.query !== query);
+    searchHistory.unshift(newSearch);
+    searchHistory = searchHistory.slice(0, 10);
+    return storage._safeSet("searchHistory", searchHistory);
   },
 
-  getRecentViews: () => {
-    return storage.get('recentViews', []);
-  },
-
-  // App Settings
-  saveAppSettings: (settings) => {
-    const currentSettings = storage.getAppSettings();
-    return storage.save('appSettings', {
-      ...currentSettings,
-      ...settings,
-      lastUpdated: new Date().toISOString()
-    });
-  },
-
-  getAppSettings: () => {
-    return storage.get('appSettings', {
-      autoSave: true,
-      darkMode: false,
-      notifications: true,
-      location: true,
-      analytics: true
-    });
-  },
-
-  // Contact Management
-  saveContactSubmission: (contactData) => {
-    const contacts = storage.getContactSubmissions();
-    const newContact = {
-      ...contactData,
-      id: Date.now(),
-      submittedAt: new Date().toISOString(),
-      status: 'submitted'
-    };
-    contacts.unshift(newContact);
-    return storage.save('contactSubmissions', contacts.slice(0, 10)); // Keep only last 10 submissions
-  },
-
-  getContactSubmissions: () => {
-    return storage.get('contactSubmissions', []);
-  },
+  clearSearchHistory: () => storage._safeSet("searchHistory", []),
 
   // Data Export/Import
   exportAllData: () => {
     try {
-      const allData = {};
-      for (let key in localStorage) {
-        if (localStorage.hasOwnProperty(key)) {
-          allData[key] = storage.get(key);
+      const data = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(STORAGE_KEY_PREFIX)) {
+          data[key] = storage._safeParse(key.replace(STORAGE_KEY_PREFIX, ''));
         }
       }
-      return {
-        success: true,
-        data: allData,
-        exportedAt: new Date().toISOString()
-      };
-    } catch (error) {
-      return { success: false, error: error.message };
+      return { success: true, data };
+    } catch (e) {
+      return { success: false, error: e.message };
     }
   },
 
-  importData: (data) => {
+  importAllData: (data) => {
     try {
-      Object.keys(data).forEach(key => {
-        if (key !== 'exportedAt') {
-          storage.save(key, data[key]);
+      for (const key in data) {
+        if (Object.hasOwnProperty.call(data, key)) {
+          storage._safeSet(key, data[key]);
         }
-      });
+      }
       return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
+    } catch (e) {
+      return { success: false, error: e.message };
     }
   },
 
-  // Memory Management
+  // Cleanup old data
+  cleanupOldData: () => {
+    // localStorage.removeItem(`${STORAGE_KEY_PREFIX}recentViews`);
+    localStorage.removeItem(`${STORAGE_KEY_PREFIX}searchHistory`);
+  },
+
+  // Get storage size
   getStorageSize: () => {
-    let total = 0;
-    for (let key in localStorage) {
-      if (localStorage.hasOwnProperty(key)) {
-        total += localStorage[key].length;
+    let totalBytes = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const value = localStorage.getItem(key);
+      if (value && key && key.startsWith(STORAGE_KEY_PREFIX)) {
+        totalBytes += (key.length + value.length) * 2;
       }
     }
     return {
-      bytes: total,
-      kb: (total / 1024).toFixed(2),
-      mb: (total / (1024 * 1024)).toFixed(2)
+      bytes: totalBytes,
+      kb: (totalBytes / 1024).toFixed(2),
+      mb: (totalBytes / (1024 * 1024)).toFixed(2),
     };
   },
-
-  cleanupOldData: () => {
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
-    // Cleanup old search history
-    const searches = storage.getSearchHistory();
-    const recentSearches = searches.filter(s => new Date(s.timestamp) > oneMonthAgo);
-    storage.save('searchHistory', recentSearches);
-
-    // Cleanup old recent views
-    const views = storage.getRecentViews();
-    const recentViews = views.filter(v => new Date(v.viewedAt) > oneMonthAgo);
-    storage.save('recentViews', recentViews);
-
-    return true;
-  }
 };

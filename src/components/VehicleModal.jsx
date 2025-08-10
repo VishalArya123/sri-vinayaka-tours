@@ -1,60 +1,68 @@
-// src/components/VehicleModal.jsx
-import React, { useState } from 'react';
-import { X, ChevronLeft, ChevronRight, CheckCircle, XCircle, User, Award, Phone } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { storage } from '../utils/storage';
+"use client"
+
+import { useState } from "react"
+import { X, ChevronLeft, ChevronRight, CheckCircle, XCircle, User, Award, Phone } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import { storage } from "../utils/storage"
 
 const VehicleModal = ({ vehicle, isOpen, onClose }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  const [selectedDriver, setSelectedDriver] = useState(null);
-  const navigate = useNavigate();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [selectedPlan, setSelectedPlan] = useState(null)
+  const [selectedDriver, setSelectedDriver] = useState(null)
+  const navigate = useNavigate()
 
-  if (!isOpen || !vehicle) return null;
+  if (!isOpen || !vehicle) return null
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % vehicle.images.length);
-  };
+    setCurrentImageIndex((prev) => (prev + 1) % vehicle.images.length)
+  }
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + vehicle.images.length) % vehicle.images.length);
-  };
+    setCurrentImageIndex((prev) => (prev - 1 + vehicle.images.length) % vehicle.images.length)
+  }
 
   const handleBookNow = () => {
     if (!selectedPlan) {
-      alert('Please select a plan first');
-      return;
+      alert("Please select a plan first")
+      return
     }
-
+    if (vehicle.type === "bus" && vehicle.drivers && !selectedDriver) {
+      alert("Please select a driver first")
+      return
+    }
     const bookingData = {
-      type: 'vehicle',
+      type: "vehicle",
       vehicle,
       selectedPlan,
-      selectedDriver: vehicle.type === 'bus' ? selectedDriver : null,
-      timestamp: new Date().toISOString()
-    };
+      selectedDriver: vehicle.type === "bus" ? selectedDriver : null,
+      timestamp: new Date().toISOString(),
+    }
+    const success = storage.saveBookingData(bookingData)
+    if (success) {
+      onClose()
+      navigate("/booking-form")
+    } else {
+      alert("Error saving booking data. Please try again.")
+    }
+  }
 
-    storage.saveBookingData(bookingData);
-    navigate('/booking-form', { state: bookingData });
-  };
-
-  const handleSaveTour = () => {
+  const handleSaveVehicle = () => {
     const wishlistItem = {
       id: vehicle.id,
-      type: 'vehicle',
+      type: vehicle.type, // CHANGED: Save the specific vehicle type ('car' or 'bus')
       name: vehicle.name,
       image: vehicle.images[0],
       price: selectedPlan?.price || vehicle.plans[0]?.price,
-      savedOn: new Date().toLocaleDateString()
-    };
-
-    const success = storage.addToWishlist(wishlistItem);
-    if (success) {
-      alert('Vehicle saved to wishlist!');
-    } else {
-      alert('Vehicle already in wishlist!');
+      capacity: vehicle.capacity,
+      savedOn: new Date().toLocaleDateString(),
     }
-  };
+    const success = storage.addToWishlist(wishlistItem)
+    if (success) {
+      alert("Vehicle saved to wishlist!")
+    } else {
+      alert("Vehicle is already in your wishlist!")
+    }
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
@@ -62,23 +70,18 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b">
           <h2 className="text-2xl font-bold text-gray-800">{vehicle.name}</h2>
-          <button 
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full"
-          >
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
             <X className="h-6 w-6" />
           </button>
         </div>
-
         <div className="p-6">
           {/* Image Carousel */}
           <div className="relative h-80 rounded-lg overflow-hidden mb-6">
-            <img 
-              src={vehicle.images[currentImageIndex]} 
+            <img
+              src={vehicle.images[currentImageIndex] || "/placeholder.svg"}
               alt={`${vehicle.name} - Image ${currentImageIndex + 1}`}
               className="w-full h-full object-cover"
             />
-            
             {vehicle.images.length > 1 && (
               <>
                 <button
@@ -87,21 +90,19 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
                 >
                   <ChevronLeft className="h-6 w-6" />
                 </button>
-                
                 <button
                   onClick={nextImage}
                   className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-70 rounded-full p-2"
                 >
                   <ChevronRight className="h-6 w-6" />
                 </button>
-                
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
                   {vehicle.images.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
                       className={`w-2 h-2 rounded-full ${
-                        index === currentImageIndex ? 'bg-white' : 'bg-white bg-opacity-50'
+                        index === currentImageIndex ? "bg-white" : "bg-white bg-opacity-50"
                       }`}
                     />
                   ))}
@@ -109,10 +110,35 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
               </>
             )}
           </div>
-
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Details */}
             <div className="lg:col-span-2 space-y-6">
+              {/* Vehicle Info */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h3 className="text-lg font-semibold mb-3">Vehicle Information</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-600">Capacity:</span>
+                    <span className="ml-2 font-medium">{vehicle.capacity}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Type:</span>
+                    <span className="ml-2 font-medium capitalize">{vehicle.type}</span>
+                  </div>
+                  {vehicle.fuel && (
+                    <div>
+                      <span className="text-gray-600">Fuel Type:</span>
+                      <span className="ml-2 font-medium">{vehicle.fuel}</span>
+                    </div>
+                  )}
+                  {vehicle.transmission && (
+                    <div>
+                      <span className="text-gray-600">Transmission:</span>
+                      <span className="ml-2 font-medium">{vehicle.transmission}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
               {/* Plans */}
               <div>
                 <h3 className="text-xl font-semibold mb-4">Select Plan</h3>
@@ -123,8 +149,8 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
                       onClick={() => setSelectedPlan(plan)}
                       className={`p-4 border rounded-lg cursor-pointer transition-all ${
                         selectedPlan?.id === plan.id
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-blue-300'
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-blue-300"
                       }`}
                     >
                       <div className="flex justify-between items-center">
@@ -133,16 +159,16 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
                           <p className="text-sm text-gray-600">{plan.description}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-xl font-bold text-blue-600">₹{plan.price}</p>
+                          <p className="text-xl font-bold text-blue-600">₹{plan.price.toLocaleString()}</p>
+                          {plan.duration && <p className="text-sm text-gray-500">{plan.duration}</p>}
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-
               {/* Driver Selection for Buses */}
-              {vehicle.type === 'bus' && vehicle.drivers && (
+              {vehicle.type === "bus" && vehicle.drivers && (
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Select Driver</h3>
                   <div className="grid gap-3">
@@ -152,8 +178,8 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
                         onClick={() => setSelectedDriver(driver)}
                         className={`p-4 border rounded-lg cursor-pointer transition-all ${
                           selectedDriver?.id === driver.id
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-gray-200 hover:border-blue-300'
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 hover:border-blue-300"
                         }`}
                       >
                         <div className="flex items-center justify-between">
@@ -177,7 +203,6 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
                   </div>
                 </div>
               )}
-
               {/* Inclusions & Exclusions */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -194,7 +219,6 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
                     ))}
                   </ul>
                 </div>
-
                 <div>
                   <h3 className="text-xl font-semibold mb-4 flex items-center">
                     <XCircle className="h-5 w-5 text-red-500 mr-2" />
@@ -210,7 +234,6 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
                   </ul>
                 </div>
               </div>
-
               {/* Notes */}
               {vehicle.notes && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -219,53 +242,82 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
                 </div>
               )}
             </div>
-
             {/* Right Column - Booking */}
             <div className="lg:col-span-1">
               <div className="bg-gray-50 rounded-lg p-6 sticky top-6">
                 <h3 className="text-xl font-semibold mb-4">Booking Summary</h3>
-                
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Vehicle:</span>
+                    <span className="font-medium">{vehicle.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Capacity:</span>
+                    <span className="font-medium">{vehicle.capacity}</span>
+                  </div>
+                </div>
                 {selectedPlan && (
-                  <div className="mb-6">
+                  <div className="mb-6 p-4 bg-white rounded-lg border">
                     <div className="flex justify-between mb-2">
-                      <span>Selected Plan:</span>
+                      <span className="text-gray-600">Selected Plan:</span>
                       <span className="font-medium">{selectedPlan.name}</span>
                     </div>
                     <div className="flex justify-between mb-2">
-                      <span>Price:</span>
-                      <span className="text-xl font-bold text-blue-600">₹{selectedPlan.price}</span>
+                      <span className="text-gray-600">Price:</span>
+                      <span className="text-xl font-bold text-blue-600">₹{selectedPlan.price.toLocaleString()}</span>
                     </div>
+                    {selectedPlan.duration && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Duration:</span>
+                        <span className="font-medium">{selectedPlan.duration}</span>
+                      </div>
+                    )}
                   </div>
                 )}
-
                 {selectedDriver && (
-                  <div className="mb-6">
+                  <div className="mb-6 p-4 bg-white rounded-lg border">
                     <div className="flex justify-between mb-2">
-                      <span>Driver:</span>
+                      <span className="text-gray-600">Driver:</span>
                       <span className="font-medium">{selectedDriver.name}</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Rating:</span>
+                      <span className="font-medium">{selectedDriver.rating} ⭐</span>
+                    </div>
                   </div>
                 )}
-
                 <div className="space-y-3">
                   <button
                     onClick={handleBookNow}
-                    disabled={!selectedPlan}
+                    disabled={!selectedPlan || (vehicle.type === "bus" && vehicle.drivers && !selectedDriver)}
                     className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
-                      selectedPlan
-                        ? 'bg-blue-600 text-white hover:bg-blue-700'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      selectedPlan && (vehicle.type !== "bus" || !vehicle.drivers || selectedDriver)
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
                     }`}
                   >
-                    Book Now
+                    {!selectedPlan
+                      ? "Select a Plan"
+                      : vehicle.type === "bus" && vehicle.drivers && !selectedDriver
+                        ? "Select a Driver"
+                        : "Book Now"}
                   </button>
-                  
                   <button
-                    onClick={handleSaveTour}
+                    onClick={handleSaveVehicle}
                     className="w-full py-3 px-4 border border-blue-600 text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors"
                   >
                     Save Vehicle
                   </button>
+                </div>
+                {/* Contact Information */}
+                <div className="mt-6 p-4 bg-white rounded-lg border">
+                  <h4 className="font-semibold text-gray-800 mb-3">Need Help?</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center text-gray-600">
+                      <Phone className="w-4 h-4 mr-2" />
+                      <span>+91 12345 67890</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -273,7 +325,7 @@ const VehicleModal = ({ vehicle, isOpen, onClose }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default VehicleModal;
+export default VehicleModal
