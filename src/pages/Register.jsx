@@ -182,7 +182,7 @@ const Register = () => {
           <div className="mx-auto h-16 w-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mb-4">
             <UserPlus className="h-8 w-8 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900">Join Our Community</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Register</h2>
           <p className="mt-2 text-sm text-gray-600">
             Create your account and start exploring amazing destinations
           </p>
@@ -492,11 +492,11 @@ const Register = () => {
             <div className="text-center">
               <p className="text-xs text-gray-500">
                 By creating an account, you agree to our{" "}
-                <a href="#" className="text-purple-600 hover:text-purple-500 underline">
+                <a href="/terms-conditions" className="text-purple-600 hover:text-purple-500 underline">
                   Terms of Service
                 </a>{" "}
                 and{" "}
-                <a href="#" className="text-purple-600 hover:text-purple-500 underline">
+                <a href="/privacy-policy" className="text-purple-600 hover:text-purple-500 underline">
                   Privacy Policy
                 </a>
               </p>

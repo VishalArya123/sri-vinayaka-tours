@@ -13,6 +13,9 @@ import Profile from './pages/Profile'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ScrollToTop from './components/ScrollToTop.jsx';
+import PrivacyPolicy from './components/PrivacyPolicy.jsx';
+import TermsConditions from "./components/TermsAndConditions.jsx"
+import CancellationPolicy from "./components/CancellationPolicy.jsx"
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -30,6 +33,9 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/terms-conditions" element={<TermsConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/cancellation-policy" element={<CancellationPolicy />} />
         </Routes>
       </main>
       <Footer />

@@ -81,10 +81,6 @@ const Login = () => {
     }
   };
 
-  const fillDemoCredentials = () => {
-    setEmail("demo@example.com");
-    setPassword("password123");
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -223,21 +219,7 @@ const Login = () => {
               </button>
             </div>
 
-            {/* Demo Credentials */}
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Demo Credentials:</h4>
-              <div className="text-xs text-gray-600 space-y-1">
-                <p><strong>Email:</strong> demo@example.com</p>
-                <p><strong>Password:</strong> password123</p>
-              </div>
-              <button
-                type="button"
-                onClick={fillDemoCredentials}
-                className="mt-2 text-xs text-blue-600 hover:text-blue-800 underline"
-              >
-                Use Demo Credentials
-              </button>
-            </div>
+          
           </div>
 
           {/* Footer Links */}
