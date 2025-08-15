@@ -12,6 +12,8 @@ import {
   CheckCircle,
   Info,
   CreditCard,
+  Sparkles,
+  ArrowLeft,
 } from "lucide-react"
 import ServiceSummaryCard from "../components/ServiceSummaryCard"
 import { storage } from "../utils/storage"
@@ -234,12 +236,12 @@ const BookingForm = () => {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Basic Details</h2>
+            <h2 className="font-playfair text-2xl font-bold text-secondary-800 mb-6">Basic Details</h2>
 
             {/* Date Selection */}
             <div className="form-group">
-              <label htmlFor="serviceDate" className="block text-sm font-medium text-gray-700 mb-2">
-                {bookingData.type === "tour" ? "Tour Date" : "Service Date"} <span className="text-red-500">*</span>
+              <label htmlFor="serviceDate" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                {bookingData.type === "tour" ? "Tour Date" : "Service Date"} <span className="text-coral">*</span>
               </label>
               <div className="relative">
                 <input
@@ -248,18 +250,18 @@ const BookingForm = () => {
                   name="serviceDate"
                   value={formData.serviceDate}
                   onChange={(e) => handleInputChange(e, "basic")}
-                  className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                   required
                 />
-                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
               </div>
             </div>
 
             {/* Passenger Count */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="form-group">
-                <label htmlFor="adultCount" className="block text-sm font-medium text-gray-700 mb-2">
-                  Adults <span className="text-red-500">*</span>
+                <label htmlFor="adultCount" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                  Adults <span className="text-coral">*</span>
                 </label>
                 <div className="relative">
                   <select
@@ -267,7 +269,7 @@ const BookingForm = () => {
                     name="adultCount"
                     value={formData.adultCount}
                     onChange={(e) => handleInputChange(e, "basic")}
-                    className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                     required
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -276,12 +278,12 @@ const BookingForm = () => {
                       </option>
                     ))}
                   </select>
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
                 </div>
               </div>
 
               <div className="form-group">
-                <label htmlFor="childCount" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="childCount" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
                   Children
                 </label>
                 <div className="relative">
@@ -290,7 +292,7 @@ const BookingForm = () => {
                     name="childCount"
                     value={formData.childCount}
                     onChange={(e) => handleInputChange(e, "basic")}
-                    className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                   >
                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                       <option key={num} value={num}>
@@ -298,7 +300,7 @@ const BookingForm = () => {
                       </option>
                     ))}
                   </select>
-                  <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
                 </div>
               </div>
             </div>
@@ -307,8 +309,8 @@ const BookingForm = () => {
             {bookingData.type === "tour" && (
               <>
                 <div className="form-group">
-                  <label htmlFor="boardingPoint" className="block text-sm font-medium text-gray-700 mb-2">
-                    Boarding Point <span className="text-red-500">*</span>
+                  <label htmlFor="boardingPoint" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                    Boarding Point <span className="text-coral">*</span>
                   </label>
                   <div className="relative">
                     <select
@@ -316,7 +318,7 @@ const BookingForm = () => {
                       name="boardingPoint"
                       value={formData.boardingPoint}
                       onChange={(e) => handleInputChange(e, "basic")}
-                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     >
                       <option value="">Select Boarding Point</option>
@@ -326,13 +328,13 @@ const BookingForm = () => {
                         </option>
                       ))}
                     </select>
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="droppingPoint" className="block text-sm font-medium text-gray-700 mb-2">
-                    Dropping Point <span className="text-red-500">*</span>
+                  <label htmlFor="droppingPoint" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                    Dropping Point <span className="text-coral">*</span>
                   </label>
                   <div className="relative">
                     <select
@@ -340,7 +342,7 @@ const BookingForm = () => {
                       name="droppingPoint"
                       value={formData.droppingPoint || formData.boardingPoint}
                       onChange={(e) => handleInputChange(e, "basic")}
-                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     >
                       <option value="">Select Dropping Point</option>
@@ -350,7 +352,7 @@ const BookingForm = () => {
                         </option>
                       ))}
                     </select>
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
                   </div>
                 </div>
               </>
@@ -360,8 +362,8 @@ const BookingForm = () => {
             {bookingData.type === "vehicle" && (
               <>
                 <div className="form-group">
-                  <label htmlFor="pickupLocation" className="block text-sm font-medium text-gray-700 mb-2">
-                    Pickup Location <span className="text-red-500">*</span>
+                  <label htmlFor="pickupLocation" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                    Pickup Location <span className="text-coral">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -371,16 +373,16 @@ const BookingForm = () => {
                       value={formData.pickupLocation}
                       onChange={(e) => handleInputChange(e, "basic")}
                       placeholder="Enter pickup address"
-                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     />
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="dropoffLocation" className="block text-sm font-medium text-gray-700 mb-2">
-                    Dropoff Location <span className="text-red-500">*</span>
+                  <label htmlFor="dropoffLocation" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                    Dropoff Location <span className="text-coral">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -390,10 +392,10 @@ const BookingForm = () => {
                       value={formData.dropoffLocation}
                       onChange={(e) => handleInputChange(e, "basic")}
                       placeholder="Enter dropoff address"
-                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     />
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
                   </div>
                 </div>
               </>
@@ -404,19 +406,19 @@ const BookingForm = () => {
       case 2:
         return (
           <div className="space-y-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Contact & Passenger Details</h2>
+            <h2 className="font-playfair text-2xl font-bold text-secondary-800 mb-6">Contact & Passenger Details</h2>
 
             {/* Contact Information */}
-            <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 shadow-sm">
-              <h3 className="font-bold text-xl text-gray-800 mb-5 flex items-center">
-                <Info className="h-6 w-6 mr-3 text-blue-600" />
+            <div className="bg-gradient-to-br from-primary-50 to-accent-peach/20 p-6 rounded-3xl border border-primary-200 shadow-warm">
+              <h3 className="font-playfair font-bold text-xl text-secondary-800 mb-6 flex items-center">
+                <Info className="h-6 w-6 mr-3 text-primary-600" />
                 Your Contact Information
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="form-group">
-                  <label htmlFor="contactName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name <span className="text-red-500">*</span>
+                  <label htmlFor="contactName" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                    Full Name <span className="text-coral">*</span>
                   </label>
                   <input
                     type="text"
@@ -424,21 +426,21 @@ const BookingForm = () => {
                     name="contactName"
                     value={formData.contactName}
                     onChange={(e) => handleInputChange(e, "contact")}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-primary-200 rounded-2xl focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                     required
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="contactGender" className="block text-sm font-medium text-gray-700 mb-2">
-                    Gender <span className="text-red-500">*</span>
+                  <label htmlFor="contactGender" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                    Gender <span className="text-coral">*</span>
                   </label>
                   <select
                     id="contactGender"
                     name="contactGender"
                     value={formData.contactGender}
                     onChange={(e) => handleInputChange(e, "contact")}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-primary-200 rounded-2xl focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                     required
                   >
                     <option value="">Select Gender</option>
@@ -449,8 +451,8 @@ const BookingForm = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="contactAge" className="block text-sm font-medium text-gray-700 mb-2">
-                    Age <span className="text-red-500">*</span>
+                  <label htmlFor="contactAge" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                    Age <span className="text-coral">*</span>
                   </label>
                   <input
                     type="number"
@@ -458,15 +460,15 @@ const BookingForm = () => {
                     name="contactAge"
                     value={formData.contactAge}
                     onChange={(e) => handleInputChange(e, "contact")}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-3 border border-primary-200 rounded-2xl focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                     min="18"
                     required
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="contactMobile" className="block text-sm font-medium text-gray-700 mb-2">
-                    Mobile Number <span className="text-red-500">*</span>
+                  <label htmlFor="contactMobile" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                    Mobile Number <span className="text-coral">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -475,15 +477,15 @@ const BookingForm = () => {
                       name="contactMobile"
                       value={formData.contactMobile}
                       onChange={(e) => handleInputChange(e, "contact")}
-                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     />
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="contactAlternateMobile" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="contactAlternateMobile" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
                     Alternate Mobile Number
                   </label>
                   <div className="relative">
@@ -493,15 +495,15 @@ const BookingForm = () => {
                       name="contactAlternateMobile"
                       value={formData.contactAlternateMobile}
                       onChange={(e) => handleInputChange(e, "contact")}
-                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                     />
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email ID <span className="text-red-500">*</span>
+                  <label htmlFor="contactEmail" className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                    Email ID <span className="text-coral">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -510,28 +512,28 @@ const BookingForm = () => {
                       name="contactEmail"
                       value={formData.contactEmail}
                       onChange={(e) => handleInputChange(e, "contact")}
-                      className="w-full p-3 border border-gray-300 rounded-lg pl-12 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl pl-12 focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     />
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400" />
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 text-sm text-blue-700 flex items-center bg-blue-100 p-3 rounded-lg">
+              <div className="mt-6 text-sm text-primary-700 flex items-center bg-primary-100 p-4 rounded-2xl">
                 <Info className="h-5 w-5 mr-2 flex-shrink-0" />
-                <span>Booking details will be sent to your email and mobile number.</span>
+                <span className="font-poppins">Booking details will be sent to your email and mobile number.</span>
               </div>
             </div>
 
             {/* Adult Passengers */}
             {formData.adultPassengers.map((passenger, index) => (
-              <div key={`adult-${index}`} className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h3 className="font-bold text-xl text-gray-800 mb-5">Adult Passenger {index + 1}</h3>
+              <div key={`adult-${index}`} className="bg-secondary-50 p-6 rounded-3xl border border-secondary-200 shadow-warm">
+                <h3 className="font-playfair font-bold text-xl text-secondary-800 mb-6">Adult Passenger {index + 1}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="form-group">
-                    <label htmlFor={`adult-name-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
-                      Name <span className="text-red-500">*</span>
+                    <label htmlFor={`adult-name-${index}`} className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                      Name <span className="text-coral">*</span>
                     </label>
                     <input
                       type="text"
@@ -539,21 +541,21 @@ const BookingForm = () => {
                       name="name"
                       value={passenger.name}
                       onChange={(e) => handleInputChange(e, "adultPassenger", index)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     />
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor={`adult-gender-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
-                      Gender <span className="text-red-500">*</span>
+                    <label htmlFor={`adult-gender-${index}`} className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                      Gender <span className="text-coral">*</span>
                     </label>
                     <select
                       id={`adult-gender-${index}`}
                       name="gender"
                       value={passenger.gender}
                       onChange={(e) => handleInputChange(e, "adultPassenger", index)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     >
                       <option value="">Select Gender</option>
@@ -564,8 +566,8 @@ const BookingForm = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor={`adult-age-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
-                      Age <span className="text-red-500">*</span>
+                    <label htmlFor={`adult-age-${index}`} className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                      Age <span className="text-coral">*</span>
                     </label>
                     <input
                       type="number"
@@ -573,7 +575,7 @@ const BookingForm = () => {
                       name="age"
                       value={passenger.age}
                       onChange={(e) => handleInputChange(e, "adultPassenger", index)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       min="18"
                       required
                     />
@@ -584,12 +586,12 @@ const BookingForm = () => {
 
             {/* Child Passengers */}
             {formData.childPassengers.map((passenger, index) => (
-              <div key={`child-${index}`} className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h3 className="font-bold text-xl text-gray-800 mb-5">Child Passenger {index + 1}</h3>
+              <div key={`child-${index}`} className="bg-accent-peach/10 p-6 rounded-3xl border border-accent-peach/30 shadow-warm">
+                <h3 className="font-playfair font-bold text-xl text-secondary-800 mb-6">Child Passenger {index + 1}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="form-group">
-                    <label htmlFor={`child-name-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
-                      Name <span className="text-red-500">*</span>
+                    <label htmlFor={`child-name-${index}`} className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                      Name <span className="text-coral">*</span>
                     </label>
                     <input
                       type="text"
@@ -597,21 +599,21 @@ const BookingForm = () => {
                       name="name"
                       value={passenger.name}
                       onChange={(e) => handleInputChange(e, "childPassenger", index)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     />
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor={`child-gender-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
-                      Gender <span className="text-red-500">*</span>
+                    <label htmlFor={`child-gender-${index}`} className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                      Gender <span className="text-coral">*</span>
                     </label>
                     <select
                       id={`child-gender-${index}`}
                       name="gender"
                       value={passenger.gender}
                       onChange={(e) => handleInputChange(e, "childPassenger", index)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       required
                     >
                       <option value="">Select Gender</option>
@@ -622,8 +624,8 @@ const BookingForm = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor={`child-age-${index}`} className="block text-sm font-medium text-gray-700 mb-2">
-                      Age <span className="text-red-500">*</span>
+                    <label htmlFor={`child-age-${index}`} className="block font-poppins text-sm font-medium text-secondary-700 mb-2">
+                      Age <span className="text-coral">*</span>
                     </label>
                     <input
                       type="number"
@@ -631,7 +633,7 @@ const BookingForm = () => {
                       name="age"
                       value={passenger.age}
                       onChange={(e) => handleInputChange(e, "childPassenger", index)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-primary-200 rounded-2xl focus:ring-2 focus:ring-primary-300 focus:border-transparent font-poppins transition-all duration-300"
                       min="2"
                       max="17"
                       required
@@ -648,42 +650,42 @@ const BookingForm = () => {
         const minimumPayment = Math.ceil(totalAmount * 0.1)
         return (
           <div className="space-y-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Review & Payment</h2>
+            <h2 className="font-playfair text-2xl font-bold text-secondary-800 mb-6">Review & Payment</h2>
 
             {/* Summary */}
-            <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 shadow-sm">
-              <h3 className="font-bold text-xl text-gray-800 mb-5 flex items-center">
-                <Info className="h-6 w-6 mr-3 text-blue-600" />
+            <div className="bg-gradient-to-br from-primary-50 to-accent-peach/20 p-6 rounded-3xl border border-primary-200 shadow-warm">
+              <h3 className="font-playfair font-bold text-xl text-secondary-800 mb-6 flex items-center">
+                <Info className="h-6 w-6 mr-3 text-primary-600" />
                 Your Booking Summary
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-600 mb-1">Service Date</h4>
-                  <p className="text-lg font-semibold text-gray-900">{formData.serviceDate || "Not selected"}</p>
+                  <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Service Date</h4>
+                  <p className="font-playfair text-lg font-semibold text-secondary-900">{formData.serviceDate || "Not selected"}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-600 mb-1">Contact Person</h4>
-                  <p className="text-lg font-semibold text-gray-900">{formData.contactName || "Not provided"}</p>
+                  <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Contact Person</h4>
+                  <p className="font-playfair text-lg font-semibold text-secondary-900">{formData.contactName || "Not provided"}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-600 mb-1">Adults</h4>
-                  <p className="text-lg font-semibold text-gray-900">{formData.adultCount}</p>
+                  <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Adults</h4>
+                  <p className="font-playfair text-lg font-semibold text-secondary-900">{formData.adultCount}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-600 mb-1">Children</h4>
-                  <p className="text-lg font-semibold text-gray-900">{formData.childCount}</p>
+                  <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Children</h4>
+                  <p className="font-playfair text-lg font-semibold text-secondary-900">{formData.childCount}</p>
                 </div>
                 
                 {/* Tour specific fields */}
                 {bookingData.type === "tour" && (
                   <>
                     <div>
-                      <h4 className="text-sm font-medium text-gray-600 mb-1">Boarding Point</h4>
-                      <p className="text-lg font-semibold text-gray-900">{formData.boardingPoint || "N/A"}</p>
+                      <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Boarding Point</h4>
+                      <p className="font-playfair text-lg font-semibold text-secondary-900">{formData.boardingPoint || "N/A"}</p>
                     </div>
                     <div>
-                      <h4 className="text-sm font-medium text-gray-600 mb-1">Dropping Point</h4>
-                      <p className="text-lg font-semibold text-gray-900">{formData.droppingPoint || "N/A"}</p>
+                      <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Dropping Point</h4>
+                      <p className="font-playfair text-lg font-semibold text-secondary-900">{formData.droppingPoint || "N/A"}</p>
                     </div>
                   </>
                 )}
@@ -692,17 +694,17 @@ const BookingForm = () => {
                 {bookingData.type === "vehicle" && (
                   <>
                     <div>
-                      <h4 className="text-sm font-medium text-gray-600 mb-1">Pickup Location</h4>
-                      <p className="text-lg font-semibold text-gray-900">{formData.pickupLocation || "N/A"}</p>
+                      <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Pickup Location</h4>
+                      <p className="font-playfair text-lg font-semibold text-secondary-900">{formData.pickupLocation || "N/A"}</p>
                     </div>
                     <div>
-                      <h4 className="text-sm font-medium text-gray-600 mb-1">Dropoff Location</h4>
-                      <p className="text-lg font-semibold text-gray-900">{formData.dropoffLocation || "N/A"}</p>
+                      <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Dropoff Location</h4>
+                      <p className="font-playfair text-lg font-semibold text-secondary-900">{formData.dropoffLocation || "N/A"}</p>
                     </div>
                     {bookingData.selectedDriver && (
                       <div className="md:col-span-2">
-                        <h4 className="text-sm font-medium text-gray-600 mb-1">Selected Driver</h4>
-                        <p className="text-lg font-semibold text-gray-900">{bookingData.selectedDriver.name}</p>
+                        <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Selected Driver</h4>
+                        <p className="font-playfair text-lg font-semibold text-secondary-900">{bookingData.selectedDriver.name}</p>
                       </div>
                     )}
                   </>
@@ -710,35 +712,35 @@ const BookingForm = () => {
               </div>
 
               {/* Service Details */}
-              <div className="border-t border-blue-200 pt-6">
+              <div className="border-t border-primary-200 pt-6">
                 <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-600 mb-1">
+                  <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">
                     {bookingData.type === 'tour' ? 'Tour Package' : 'Vehicle'}
                   </h4>
-                  <p className="text-lg font-semibold text-gray-900">{serviceName}</p>
+                  <p className="font-playfair text-lg font-semibold text-secondary-900">{serviceName}</p>
                 </div>
                 <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-600 mb-1">Selected Plan</h4>
-                  <p className="text-lg font-semibold text-gray-900">{bookingData.selectedPlan?.name}</p>
+                  <h4 className="font-poppins text-sm font-medium text-secondary-600 mb-1">Selected Plan</h4>
+                  <p className="font-playfair text-lg font-semibold text-secondary-900">{bookingData.selectedPlan?.name}</p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xl font-bold text-gray-800">Total Amount:</span>
-                  <span className="text-3xl font-bold text-blue-600">₹{totalAmount.toLocaleString()}</span>
+                  <span className="font-playfair text-xl font-bold text-secondary-800">Total Amount:</span>
+                  <span className="font-playfair text-3xl font-bold text-primary-600">₹{totalAmount.toLocaleString()}</span>
                 </div>
               </div>
             </div>
 
             {/* Payment Options */}
-            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
-              <h3 className="font-bold text-xl text-gray-800 mb-5 flex items-center">
-                <CreditCard className="h-6 w-6 mr-3 text-gray-700" />
+            <div className="bg-secondary-50 p-6 rounded-3xl border border-secondary-200 shadow-warm">
+              <h3 className="font-playfair font-bold text-xl text-secondary-800 mb-6 flex items-center">
+                <CreditCard className="h-6 w-6 mr-3 text-secondary-700" />
                 Payment Options
               </h3>
 
               <div className="space-y-5">
                 <label
                   htmlFor="minimum-payment"
-                  className="flex items-start cursor-pointer p-4 border border-gray-300 rounded-lg hover:border-blue-500 transition-colors"
+                  className="flex items-start cursor-pointer p-4 border border-primary-200 rounded-2xl hover:border-primary-400 transition-all duration-300 hover:shadow-warm"
                 >
                   <input
                     type="radio"
@@ -747,11 +749,11 @@ const BookingForm = () => {
                     value="minimum"
                     checked={formData.paymentOption === "minimum"}
                     onChange={(e) => handleInputChange(e, "payment")}
-                    className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500"
+                    className="mt-1 mr-3 h-5 w-5 text-primary-600 focus:ring-primary-500"
                   />
                   <div>
-                    <span className="font-semibold text-gray-800 text-lg">Minimum Payment (10%)</span>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <span className="font-playfair font-semibold text-secondary-800 text-lg">Minimum Payment (10%)</span>
+                    <p className="font-poppins text-sm text-secondary-600 mt-1">
                       Pay ₹{minimumPayment.toLocaleString()} now and the remaining amount during the service.
                     </p>
                   </div>
@@ -759,7 +761,7 @@ const BookingForm = () => {
 
                 <label
                   htmlFor="full-payment"
-                  className="flex items-start cursor-pointer p-4 border border-gray-300 rounded-lg hover:border-blue-500 transition-colors"
+                  className="flex items-start cursor-pointer p-4 border border-primary-200 rounded-2xl hover:border-primary-400 transition-all duration-300 hover:shadow-warm"
                 >
                   <input
                     type="radio"
@@ -768,11 +770,11 @@ const BookingForm = () => {
                     value="full"
                     checked={formData.paymentOption === "full"}
                     onChange={(e) => handleInputChange(e, "payment")}
-                    className="mt-1 mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500"
+                    className="mt-1 mr-3 h-5 w-5 text-primary-600 focus:ring-primary-500"
                   />
                   <div>
-                    <span className="font-semibold text-gray-800 text-lg">Full Payment</span>
-                    <p className="text-sm text-gray-600 mt-1">Pay ₹{totalAmount.toLocaleString()} now.</p>
+                    <span className="font-playfair font-semibold text-secondary-800 text-lg">Full Payment</span>
+                    <p className="font-poppins text-sm text-secondary-600 mt-1">Pay ₹{totalAmount.toLocaleString()} now.</p>
                   </div>
                 </label>
               </div>
@@ -786,13 +788,39 @@ const BookingForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">Complete Your Booking</h1>
+    <div className="min-h-screen bg-background-light pt-16 sm:pt-20">
+      {/* Header */}
+      <div className="bg-gradient-to-br from-secondary-900 via-secondary-800 to-primary-800 text-white py-8 sm:py-12 relative overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-4 right-8 animate-float">
+            <Sparkles className="w-8 h-8 text-accent-yellow" />
+          </div>
+          <div className="absolute bottom-4 left-8 animate-bounce-gentle" style={{animationDelay: '1s'}}>
+            <CreditCard className="w-6 h-6 text-accent-peach" />
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center text-white/90 hover:text-white font-poppins font-medium transition-colors duration-300 group mb-6"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2 transform transition-transform duration-300 group-hover:-translate-x-1" />
+              Back
+            </button>
+            <h1 className="font-playfair text-3xl sm:text-4xl font-bold mb-4">Complete Your Booking</h1>
+            <p className="font-poppins text-white/90 text-lg">Fill in the details to confirm your reservation</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
+            <div className="bg-white rounded-3xl shadow-float p-6 sm:p-8 border border-primary-100">
               {/* Progress Indicator */}
               <div className="flex items-center justify-between mb-10 relative">
                 {[
@@ -803,19 +831,19 @@ const BookingForm = () => {
                   <React.Fragment key={stepItem.step}>
                     <div className="flex flex-col items-center flex-1 z-10">
                       <div
-                        className={`w-10 h-10 flex items-center justify-center rounded-full font-semibold text-lg transition-all duration-300 ease-in-out ${
+                        className={`w-10 h-10 flex items-center justify-center rounded-2xl font-semibold text-lg transition-all duration-300 ease-in-out ${
                           currentStep === stepItem.step
-                            ? "bg-blue-600 text-white shadow-lg"
+                            ? "bg-elegant-gradient text-white shadow-elegant"
                             : currentStep > stepItem.step
-                              ? "bg-green-500 text-white"
-                              : "bg-gray-200 text-gray-600"
+                              ? "bg-green-500 text-white shadow-warm"
+                              : "bg-secondary-200 text-secondary-600"
                         }`}
                       >
                         {currentStep > stepItem.step ? <CheckCircle className="h-6 w-6" /> : stepItem.step}
                       </div>
                       <span
-                        className={`mt-3 text-sm text-center ${
-                          currentStep === stepItem.step ? "text-blue-700 font-semibold" : "text-gray-600"
+                        className={`mt-3 text-sm text-center font-poppins ${
+                          currentStep === stepItem.step ? "text-primary-700 font-semibold" : "text-secondary-600"
                         }`}
                       >
                         {stepItem.label}
@@ -824,7 +852,7 @@ const BookingForm = () => {
                     {index < 2 && (
                       <div
                         className={`absolute top-5 h-0.5 w-[calc(50%-4rem)] transition-all duration-300 ease-in-out ${
-                          currentStep > stepItem.step ? "bg-green-500" : "bg-gray-200"
+                          currentStep > stepItem.step ? "bg-green-500" : "bg-secondary-200"
                         }`}
                         style={{ left: `${(index + 0.5) * (100 / 3)}%`, transform: "translateX(-50%)" }}
                       ></div>
@@ -837,11 +865,11 @@ const BookingForm = () => {
               <div className="mb-8">{renderStep()}</div>
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between pt-6 border-t border-gray-200">
+              <div className="flex justify-between pt-6 border-t border-primary-200">
                 {currentStep > 1 ? (
                   <button
                     onClick={prevStep}
-                    className="flex items-center px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                    className="flex items-center px-6 py-3 bg-secondary-100 text-secondary-700 rounded-2xl hover:bg-secondary-200 transition-all duration-300 font-medium font-poppins transform hover:scale-105"
                   >
                     <ChevronLeft className="w-5 h-5 mr-2" />
                     Back
@@ -853,7 +881,7 @@ const BookingForm = () => {
                 {currentStep < 3 ? (
                   <button
                     onClick={nextStep}
-                    className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold shadow-md"
+                    className="flex items-center px-6 py-3 bg-elegant-gradient text-white rounded-2xl hover:shadow-elegant transition-all duration-300 font-semibold shadow-warm transform hover:scale-105 font-poppins"
                   >
                     Next
                     <ChevronRight className="w-5 h-5 ml-2" />
@@ -861,7 +889,7 @@ const BookingForm = () => {
                 ) : (
                   <button
                     onClick={handleFinalSubmit}
-                    className="flex items-center px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-semibold shadow-md"
+                    className="flex items-center px-8 py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 hover:shadow-elegant transition-all duration-300 font-semibold shadow-warm transform hover:scale-105 font-poppins"
                   >
                     Confirm Booking
                     <CheckCircle className="w-5 h-5 ml-2" />

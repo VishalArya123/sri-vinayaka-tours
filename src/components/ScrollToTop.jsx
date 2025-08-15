@@ -1,7 +1,6 @@
-// src/components/ScrollToTop.jsx
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { FaArrowUp } from "react-icons/fa"; // install: npm i react-icons
+import { ArrowUp } from "lucide-react"; // Changed from react-icons to lucide-react for consistency
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -33,14 +32,23 @@ const ScrollToTop = () => {
 
   return (
     <>
-      {/* Invisible functional component */}
+      {/* Enhanced scroll to top button with elegant styling */}
       {isVisible && (
         <button
           onClick={handleClick}
-          className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition"
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-elegant-gradient text-white shadow-float hover:shadow-elegant transition-all duration-300 transform hover:scale-110 animate-fade-in group border border-white/20 backdrop-blur-sm"
           aria-label="Scroll to top"
         >
-          <FaArrowUp />
+          <ArrowUp className="w-5 h-5 mx-auto transform transition-transform duration-300 group-hover:-translate-y-0.5" />
+          
+          {/* Subtle pulse animation ring */}
+          <div className="absolute inset-0 rounded-2xl bg-elegant-gradient opacity-30 animate-ping"></div>
+          
+          {/* Hover tooltip */}
+          <div className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-secondary-800 text-white text-sm font-poppins rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            Back to top
+            <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-secondary-800"></div>
+          </div>
         </button>
       )}
     </>

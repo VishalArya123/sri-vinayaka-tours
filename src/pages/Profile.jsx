@@ -14,9 +14,8 @@ const Profile = () => {
   }, [navigate])
 
   return (
-    <div className="p-4 sm:p-10 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-10 bg-gray-50 min-h-screen mt-20 sm:mt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">My Profile</h1>
         <ProfileSection />
       </div>
     </div>

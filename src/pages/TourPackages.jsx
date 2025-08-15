@@ -1,171 +1,192 @@
-import React, { useState, useEffect } from "react";
-import {
-  Search,
-  Filter,
-  MapPin,
-  ChevronDown,
-  ChevronUp,
-  X,
-} from "lucide-react";
-import TourCardDetailed from "../components/TourCardDetailed";
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import TourCard from '../components/TourCard';
+import { Search, Filter, MapPin, Calendar, Users, Star, ChevronDown, X, Sparkles, SlidersHorizontal } from 'lucide-react';
 import { tourPackages } from "../data/mockData";
 
 const TourPackages = () => {
-  const [tours, setTours] = useState(tourPackages);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tours, setTours] = useState([]);
+  const [filteredTours, setFilteredTours] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [sortBy, setSortBy] = useState("featured");
-  const [priceRange, setPriceRange] = useState([0, 5000]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Categories for filter
-  const categories = [
-    { id: "all", name: "All Packages", count: tourPackages.length },
-    {
-      id: "adventure",
-      name: "Adventure",
-      count: tourPackages.filter((t) => t.category === "adventure").length,
-    },
-    {
-      id: "cultural",
-      name: "Cultural",
-      count: tourPackages.filter((t) => t.category === "cultural").length,
-    },
-    {
-      id: "entertainment",
-      name: "Entertainment",
-      count: tourPackages.filter((t) => t.category === "entertainment").length,
-    },
-    {
-      id: "temple",
-      name: "Temple Tours",
-      count: tourPackages.filter((t) => t.category === "temple").length,
-    },
-    {
-      id: "dams",
-      name: "Dams",
-      count: tourPackages.filter((t) => t.category === "dams").length,
-    },
-  ];
+  // Filter states
+  const [filters, setFilters] = useState({
+    location: '',
+    priceRange: '',
+    duration: '',
+    rating: '',
+    category: ''
+  });
 
-  // Get unique locations
-  const uniqueLocations = [
-    ...new Set(tourPackages.map((tour) => tour.location)),
-  ];
-
-  // Filter and sort tours
-  const filterTours = () => {
-    setIsLoading(true);
-
-    setTimeout(() => {
-      let filteredTours = tourPackages;
-
-      // Filter by search term
-      if (searchTerm) {
-        filteredTours = filteredTours.filter(
-          (tour) =>
-            tour.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            tour.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            tour.description.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      }
-
-      // Filter by category
-      if (selectedCategory !== "all") {
-        filteredTours = filteredTours.filter(
-          (tour) => tour.category === selectedCategory
-        );
-      }
-
-      // Filter by price range
-      filteredTours = filteredTours.filter(
-        (tour) => tour.price >= priceRange[0] && tour.price <= priceRange[1]
-      );
-
-      // Sort tours
-      switch (sortBy) {
-        case "price-low":
-          filteredTours.sort((a, b) => a.price - b.price);
-          break;
-        case "price-high":
-          filteredTours.sort((a, b) => b.price - a.price);
-          break;
-        case "rating":
-          filteredTours.sort((a, b) => b.rating - a.rating);
-          break;
-        case "duration":
-          filteredTours.sort((a, b) => a.duration.localeCompare(b.duration));
-          break;
-        default:
-          // Keep original order for 'featured'
-          break;
-      }
-
-      setTours(filteredTours);
-      setIsLoading(false);
-    }, 300);
+  // Filter options
+  const filterOptions = {
+    locations: ['Goa', 'Kerala', 'Rajasthan', 'Himachal Pradesh', 'Kashmir', 'Tamil Nadu', 'Karnataka', 'Uttarakhand'],
+    priceRanges: [
+      { label: 'Under ₹10,000', value: '0-10000' },
+      { label: '₹10,000 - ₹25,000', value: '10000-25000' },
+      { label: '₹25,000 - ₹50,000', value: '25000-50000' },
+      { label: 'Above ₹50,000', value: '50000-999999' }
+    ],
+    durations: ['1-3 days', '4-7 days', '8-14 days', '15+ days'],
+    ratings: ['4.5+', '4.0+', '3.5+', '3.0+'],
+    categories: ['Adventure', 'Heritage', 'Beach', 'Hill Station', 'Spiritual', 'Wildlife']
   };
 
-  // Handle search
+  useEffect(() => {
+    // Simulate loading
+    setTimeout(() => {
+      setTours(tourPackages);
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [tours, searchQuery, filters]);
+
+  const applyFilters = () => {
+    let filtered = [...tours];
+
+    // Search filter
+    if (searchQuery) {
+      filtered = filtered.filter(tour =>
+        tour.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tour.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tour.highlights?.some(highlight => 
+          highlight.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    }
+
+    // Location filter
+    if (filters.location) {
+      filtered = filtered.filter(tour =>
+        tour.location.toLowerCase().includes(filters.location.toLowerCase())
+      );
+    }
+
+    // Price range filter
+    if (filters.priceRange) {
+      const [min, max] = filters.priceRange.split('-').map(Number);
+      filtered = filtered.filter(tour =>
+        tour.price >= min && tour.price <= max
+      );
+    }
+
+    // Duration filter
+    if (filters.duration) {
+      filtered = filtered.filter(tour => {
+        const tourDays = parseInt(tour.duration.split(' ')[0]);
+        switch (filters.duration) {
+          case '1-3 days':
+            return tourDays >= 1 && tourDays <= 3;
+          case '4-7 days':
+            return tourDays >= 4 && tourDays <= 7;
+          case '8-14 days':
+            return tourDays >= 8 && tourDays <= 14;
+          case '15+ days':
+            return tourDays >= 15;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Rating filter
+    if (filters.rating) {
+      const minRating = parseFloat(filters.rating.replace('+', ''));
+      filtered = filtered.filter(tour => tour.rating >= minRating);
+    }
+
+    // Category filter
+    if (filters.category) {
+      filtered = filtered.filter(tour =>
+        tour.category?.toLowerCase().includes(filters.category.toLowerCase())
+      );
+    }
+
+    setFilteredTours(filtered);
+  };
+
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      location: '',
+      priceRange: '',
+      duration: '',
+      rating: '',
+      category: ''
+    });
+    setSearchQuery('');
+    setSearchParams({});
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
-    filterTours();
-    setSearchTerm("");
-    
-  };
-
-  // Effect to filter tours when filters change
-  useEffect(() => {
-    filterTours();
-  }, [selectedCategory, sortBy, priceRange]);
-
-  // Clear all filters
-  const clearFilters = () => {
-    setSearchTerm("");
-    setSelectedCategory("all");
-    setSortBy("featured");
-    setPriceRange([0, 5000]);
-    setTours(tourPackages);
-    setIsFilterOpen(false);
+    if (searchQuery.trim()) {
+      setSearchParams({ search: searchQuery.trim() });
+    } else {
+      setSearchParams({});
+    }
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Enhanced Header */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800 text-white py-16 sm:py-20 lg:py-24 overflow-hidden">
-        {/* Background Pattern */}
+    <div className="min-h-screen bg-background-light">
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-16 sm:pt-24 sm:pb-20 lg:pt-32 lg:pb-24 bg-gradient-to-br from-secondary-900 via-secondary-800 to-primary-800 text-white overflow-hidden">
+        {/* Background Decorations */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 "></div>
+          <div className="absolute top-20 left-10 animate-float">
+            <Sparkles className="w-16 h-16 text-accent-yellow" />
+          </div>
+          <div className="absolute top-40 right-20 animate-bounce-gentle" style={{animationDelay: '1s'}}>
+            <MapPin className="w-12 h-12 text-accent-peach" />
+          </div>
+          <div className="absolute bottom-32 left-32 animate-float" style={{animationDelay: '2s'}}>
+            <Star className="w-14 h-14 text-accent-yellow" />
+          </div>
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
-              Explore Our
-              <span className="block text-yellow-300">Tour Packages</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-4xl mx-auto mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-glass-gradient backdrop-blur-sm border border-white/20 rounded-full text-white/90 font-medium mb-6 animate-fade-in">
+              <MapPin className="w-4 h-4 mr-2" />
+              Explore Destinations
+            </div>
+            
+            <h1 className="font-playfair text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in-up">
+              Discover Amazing
+              <span className="text-accent-yellow"> Tour Packages</span>
             </h1>
-            <p className="text-lg sm:text-xl lg:text-2xl mb-8 sm:mb-12 opacity-90 leading-relaxed">
-              Discover the perfect getaway from our carefully curated collection
-              of tour packages across India.
+            
+            <p className="font-poppins text-lg sm:text-xl text-white/90 leading-relaxed mb-8 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+              From serene backwaters to majestic mountains, explore India's incredible diversity with our carefully curated tour packages
             </p>
+          </div>
 
-            {/* Enhanced Search Bar */}
-            <form
-              onSubmit={handleSearch}
-              className="max-w-2xl mx-auto relative"
-            >
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+            <form onSubmit={handleSearch} className="relative">
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search destinations, tours, experiences..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full p-4 sm:p-5 pr-14 rounded-2xl text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-2xl text-base sm:text-lg placeholder-gray-500"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search destinations, tours, or experiences..."
+                  className="w-full px-6 py-4 pr-16 bg-glass-gradient backdrop-blur-lg border border-white/30 text-white placeholder-white/70 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent-yellow focus:border-transparent font-poppins text-lg"
                 />
                 <button
                   type="submit"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white p-2 sm:p-3 rounded-xl transition-colors duration-300"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-accent-yellow hover:bg-accent-yellow/90 text-secondary-800 p-3 rounded-xl transition-all duration-300 transform hover:scale-105"
                 >
                   <Search className="w-5 h-5" />
                 </button>
@@ -175,422 +196,188 @@ const TourPackages = () => {
         </div>
       </section>
 
-      {/* Filter and Tour Packages Section */}
-      <section className="py-8 sm:py-12">
-        <div className="container mx-auto px-4">
-          {/* Mobile Filter Toggle */}
-          <div className="lg:hidden mb-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-                Tour Packages
-                <span className="text-base font-normal text-gray-600 ml-2">
-                  ({tours.length} found)
-                </span>
-              </h2>
+      {/* Filters and Results Section */}
+      <section className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Filter Bar */}
+          <div className="bg-white rounded-2xl shadow-warm p-6 mb-8 animate-fade-in-up">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              {/* Filter Button - Mobile */}
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center space-x-2 bg-white border-2 border-gray-200 hover:border-blue-500 px-4 py-2 rounded-xl transition-colors duration-300 shadow-sm"
+                className="md:hidden inline-flex items-center px-4 py-2 bg-elegant-gradient text-white rounded-xl font-medium transition-all duration-300 hover:shadow-elegant"
               >
-                <span className="font-medium text-gray-700">Filters</span>
-                {isFilterOpen ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                )}
+                <SlidersHorizontal className="w-4 h-4 mr-2" />
+                Filters
+                <ChevronDown className={`w-4 h-4 ml-2 transform transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />
               </button>
-            </div>
-          </div>
 
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-            {/* Enhanced Filter Sidebar */}
-            <div
-              className={`lg:w-80 flex-shrink-0 ${
-                isFilterOpen ? "block" : "hidden lg:block"
-              }`}
-            >
-              <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-6">
-                {/* Filter Header */}
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-gray-800 flex items-center">
-                    <Filter className="w-5 h-5 mr-2 text-blue-600" />
-                    Filter Tours
-                  </h3>
-                  <button
-                    onClick={() => setIsFilterOpen(false)}
-                    className="lg:hidden p-1 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    <X className="w-5 h-5 text-gray-500" />
-                  </button>
-                </div>
+              {/* Desktop Filters */}
+              <div className="hidden md:flex flex-wrap items-center gap-4 flex-1">
+                <select
+                  value={filters.location}
+                  onChange={(e) => handleFilterChange('location', e.target.value)}
+                  className="px-4 py-2 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 font-poppins bg-white"
+                >
+                  <option value="">All Locations</option>
+                  {filterOptions.locations.map(location => (
+                    <option key={location} value={location}>{location}</option>
+                  ))}
+                </select>
 
-                {/* Sort By */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-gray-700 mb-3">Sort By</h4>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="featured">Featured</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="rating">Highest Rated</option>
-                    <option value="duration">Duration</option>
-                  </select>
-                </div>
+                <select
+                  value={filters.priceRange}
+                  onChange={(e) => handleFilterChange('priceRange', e.target.value)}
+                  className="px-4 py-2 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 font-poppins bg-white"
+                >
+                  <option value="">Price Range</option>
+                  {filterOptions.priceRanges.map(range => (
+                    <option key={range.value} value={range.value}>{range.label}</option>
+                  ))}
+                </select>
 
-                {/* Category Filter */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-gray-700 mb-4">
-                    Categories
-                  </h4>
-                  <div className="space-y-3">
-                    {categories.map((category) => (
-                      <label
-                        key={category.id}
-                        className="flex items-center cursor-pointer group"
-                      >
-                        <input
-                          type="radio"
-                          name="category"
-                          checked={selectedCategory === category.id}
-                          onChange={() => setSelectedCategory(category.id)}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                        />
-                        <span className="ml-3 text-gray-700 group-hover:text-blue-600 transition-colors flex-1">
-                          {category.name}
-                        </span>
-                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                          {category.count}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                <select
+                  value={filters.duration}
+                  onChange={(e) => handleFilterChange('duration', e.target.value)}
+                  className="px-4 py-2 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 font-poppins bg-white"
+                >
+                  <option value="">Duration</option>
+                  {filterOptions.durations.map(duration => (
+                    <option key={duration} value={duration}>{duration}</option>
+                  ))}
+                </select>
 
-                {/* Price Range */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-gray-700 mb-4">
-                    Price Range
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>₹{priceRange[0]}</span>
-                      <span>₹{priceRange[1]}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="5000"
-                      step="100"
-                      value={priceRange[1]}
-                      onChange={(e) =>
-                        setPriceRange([
-                          priceRange[0],
-                          Number.parseInt(e.target.value),
-                        ])
-                      }
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                    <div className="grid grid-cols-3 gap-2 text-xs text-gray-500">
-                      <button
-                        onClick={() => setPriceRange([0, 1000])}
-                        className="p-2 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                      >
-                        Under ₹1K
-                      </button>
-                      <button
-                        onClick={() => setPriceRange([1000, 2500])}
-                        className="p-2 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                      >
-                        ₹1K - ₹2.5K
-                      </button>
-                      <button
-                        onClick={() => setPriceRange([2500, 5000])}
-                        className="p-2 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                      >
-                        Above ₹2.5K
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <select
+                  value={filters.rating}
+                  onChange={(e) => handleFilterChange('rating', e.target.value)}
+                  className="px-4 py-2 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 font-poppins bg-white"
+                >
+                  <option value="">Rating</option>
+                  {filterOptions.ratings.map(rating => (
+                    <option key={rating} value={rating}>{rating} Stars</option>
+                  ))}
+                </select>
+              </div>
 
-                {/* Quick Location Filter */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-gray-700 mb-4">
-                    Popular Destinations
-                  </h4>
-                  <div className="space-y-2">
-                    {uniqueLocations.map((location) => (
-                      <button
-                        key={location}
-                        onClick={() => {
-                          setSearchTerm(location);
-                          setTimeout(filterTours, 0);
-                        }}
-                        className="flex items-center w-full text-left p-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors group"
-                      >
-                        <MapPin className="w-4 h-4 mr-3 text-gray-400 group-hover:text-blue-500" />
-                        <span className="text-sm">{location}</span>
-                        <span className="ml-auto text-xs text-gray-400">
-                          {
-                            tourPackages.filter((t) => t.location === location)
-                              .length
-                          }
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Clear Filters */}
+              {/* Results Count and Clear */}
+              <div className="flex items-center gap-4">
+                <span className="font-poppins text-secondary-600">
+                  {loading ? 'Loading...' : `${filteredTours.length} ${filteredTours.length === 1 ? 'package' : 'packages'} found`}
+                </span>
+                
                 <button
                   onClick={clearFilters}
-                  className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors duration-300"
+                  className="inline-flex items-center px-4 py-2 text-secondary-600 hover:text-primary-600 border border-secondary-200 hover:border-primary-300 rounded-xl transition-all duration-300 font-poppins"
                 >
-                  Clear All Filters
+                  <X className="w-4 h-4 mr-1" />
+                  Clear
                 </button>
               </div>
             </div>
 
-            {/* Tour Listings */}
-            <div className="flex-1">
-              {/* Desktop Header */}
-              <div className="hidden lg:flex justify-between items-center mb-8">
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-800">
-                  Available Tour Packages
-                  <span className="text-lg font-normal text-gray-600 ml-3">
-                    ({tours.length} found)
-                  </span>
-                </h2>
-              </div>
+            {/* Mobile Filter Panel */}
+            {isFilterOpen && (
+              <div className="md:hidden mt-6 pt-6 border-t border-primary-200 animate-fade-in">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <select
+                    value={filters.location}
+                    onChange={(e) => handleFilterChange('location', e.target.value)}
+                    className="px-4 py-3 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 font-poppins bg-white"
+                  >
+                    <option value="">All Locations</option>
+                    {filterOptions.locations.map(location => (
+                      <option key={location} value={location}>{location}</option>
+                    ))}
+                  </select>
 
-              {/* Loading State */}
-              {isLoading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, index) => (
-                    <div
-                      key={index}
-                      className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse"
-                    >
-                      <div className="h-48 sm:h-56 md:h-64 bg-gray-300"></div>
-                      <div className="p-6">
-                        <div className="h-6 bg-gray-300 rounded mb-3"></div>
-                        <div className="h-4 bg-gray-300 rounded mb-4"></div>
-                        <div className="grid grid-cols-2 gap-3 mb-6">
-                          <div className="h-4 bg-gray-300 rounded"></div>
-                          <div className="h-4 bg-gray-300 rounded"></div>
-                        </div>
-                        <div className="h-12 bg-gray-300 rounded"></div>
-                      </div>
-                    </div>
-                  ))}
+                  <select
+                    value={filters.priceRange}
+                    onChange={(e) => handleFilterChange('priceRange', e.target.value)}
+                    className="px-4 py-3 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 font-poppins bg-white"
+                  >
+                    <option value="">Price Range</option>
+                    {filterOptions.priceRanges.map(range => (
+                      <option key={range.value} value={range.value}>{range.label}</option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={filters.duration}
+                    onChange={(e) => handleFilterChange('duration', e.target.value)}
+                    className="px-4 py-3 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 font-poppins bg-white"
+                  >
+                    <option value="">Duration</option>
+                    {filterOptions.durations.map(duration => (
+                      <option key={duration} value={duration}>{duration}</option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={filters.rating}
+                    onChange={(e) => handleFilterChange('rating', e.target.value)}
+                    className="px-4 py-3 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 font-poppins bg-white"
+                  >
+                    <option value="">Rating</option>
+                    {filterOptions.ratings.map(rating => (
+                      <option key={rating} value={rating}>{rating} Stars</option>
+                    ))}
+                  </select>
                 </div>
-              ) : tours.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {tours.map((tour) => (
-                    <div
-                      key={tour.id}
-                      className="transform transition-all duration-300 hover:scale-[1.02]"
+              </div>
+            )}
+          </div>
+
+          {/* Loading State */}
+          {loading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, index) => (
+                <div key={index} className="animate-pulse">
+                  <div className="bg-gradient-to-r from-primary-100 via-primary-50 to-primary-100 rounded-3xl h-80 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -skew-x-12 animate-shimmer"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Tours Grid */}
+          {!loading && (
+            <>
+              {filteredTours.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredTours.map((tour, index) => (
+                    <div 
+                      key={tour.id} 
+                      className="animate-fade-in-up"
+                      style={{animationDelay: `${index * 0.1}s`}}
                     >
-                      <TourCardDetailed tour={tour} />
+                      <TourCard tour={tour} />
                     </div>
                   ))}
                 </div>
               ) : (
-                /* No Results State */
-                <div className="bg-white rounded-2xl shadow-lg p-8 sm:p-12 text-center">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Search className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400" />
+                <div className="text-center py-16 animate-fade-in">
+                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-primary-100 to-primary-200 mb-6">
+                    <Search className="w-12 h-12 text-primary-600" />
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
-                    No tours found
+                  <h3 className="font-playfair text-2xl font-bold text-secondary-800 mb-4">
+                    No Tours Found
                   </h3>
-                  <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                    We couldn't find any tours matching your criteria. Try
-                    adjusting your search or filters to discover more amazing
-                    destinations.
+                  <p className="font-poppins text-secondary-600 mb-8 max-w-md mx-auto">
+                    We couldn't find any tours matching your criteria. Try adjusting your filters or search terms.
                   </p>
                   <button
                     onClick={clearFilters}
-                    className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-xl transition-colors duration-300 shadow-lg"
+                    className="inline-flex items-center px-6 py-3 bg-elegant-gradient text-white font-semibold rounded-xl hover:shadow-elegant transition-all duration-300 transform hover:scale-105"
                   >
-                    View All Tours
+                    Clear All Filters
                   </button>
                 </div>
               )}
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </section>
-
-      {/* Mobile Filter Overlay */}
-      {isFilterOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50"
-          onClick={() => setIsFilterOpen(false)}
-        >
-          <div
-            className="absolute inset-x-0 bottom-0 bg-white rounded-t-3xl max-h-[85vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-800">
-                  Filter Tours
-                </h3>
-                <button
-                  onClick={() => setIsFilterOpen(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <X className="w-6 h-6 text-gray-500" />
-                </button>
-              </div>
-
-              {/* Mobile filter content - same as desktop but optimized for mobile */}
-              <div className="space-y-6">
-                {/* Sort By */}
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-3">Sort By</h4>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="featured">Featured</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="rating">Highest Rated</option>
-                    <option value="duration">Duration</option>
-                  </select>
-                </div>
-
-                {/* Categories */}
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-4">
-                    Categories
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    {categories.map((category) => (
-                      <label
-                        key={category.id}
-                        className="flex items-center cursor-pointer p-3 border border-gray-200 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                      >
-                        <input
-                          type="radio"
-                          name="category"
-                          checked={selectedCategory === category.id}
-                          onChange={() => setSelectedCategory(category.id)}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                        />
-                        <span className="ml-2 text-sm font-medium text-gray-700">
-                          {category.name}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Price Range */}
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-4">
-                    Price Range
-                  </h4>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>₹{priceRange[0]}</span>
-                      <span>₹{priceRange[1]}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="5000"
-                      step="100"
-                      value={priceRange[1]}
-                      onChange={(e) =>
-                        setPriceRange([
-                          priceRange[0],
-                          Number.parseInt(e.target.value),
-                        ])
-                      }
-                      className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                    <div className="grid grid-cols-3 gap-2 text-xs text-gray-500">
-                      <button
-                        onClick={() => setPriceRange([0, 1000])}
-                        className="p-3 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-                      >
-                        Under ₹1K
-                      </button>
-                      <button
-                        onClick={() => setPriceRange([1000, 2500])}
-                        className="p-3 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-                      >
-                        ₹1K - ₹2.5K
-                      </button>
-                      <button
-                        onClick={() => setPriceRange([2500, 5000])}
-                        className="p-3 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-center"
-                      >
-                        Above ₹2.5K
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Popular Destinations */}
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-4">
-                    Popular Destinations
-                  </h4>
-                  <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto">
-                    {uniqueLocations.map((location) => (
-                      <button
-                        key={location}
-                        onClick={() => {
-                          setSearchTerm(location);
-                          setTimeout(filterTours, 0);
-                          setIsFilterOpen(false);
-                        }}
-                        className="flex items-center justify-between w-full text-left p-3 rounded-xl border border-gray-200 hover:bg-blue-50 hover:border-blue-300 transition-colors group"
-                      >
-                        <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-3 text-gray-400 group-hover:text-blue-500" />
-                          <span className="text-sm font-medium text-gray-700">
-                            {location}
-                          </span>
-                        </div>
-                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                          {
-                            tourPackages.filter((t) => t.location === location)
-                              .length
-                          }
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Apply Filters Button */}
-                <div className="flex space-x-3 pt-4 border-t border-gray-200">
-                  <button
-                    onClick={clearFilters}
-                    className="flex-1 px-6 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors"
-                  >
-                    Clear All
-                  </button>
-                  <button
-                    onClick={() => setIsFilterOpen(false)}
-                    className="flex-1 px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
-                  >
-                    Apply Filters
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

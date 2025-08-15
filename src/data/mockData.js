@@ -2,22 +2,20 @@
 
 export const services = [
   {
-    id: 1,
-    title: "Explore Tour Packages",
-    description: "Discover amazing destinations with our curated tour packages",
-    icon: "🗺️",
+    id:1,
+    title: "Customized Tour Packages",
+    description: "Tailored travel experiences designed for your perfect getaway",
+    icon: "🏛️",
     route: "/tour-packages",
-    color: "bg-blue-500",
-    backgroundImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+    backgroundImage: "https://media.istockphoto.com/id/1215274990/photo/high-wide-angle-view-of-charminar-in-the-night.webp?a=1&b=1&s=612x612&w=0&k=20&c=sQggGGYHLaIX4wlJzKYeLkEZHthBO6vLY-Rwwo75KxA="
   },
   {
-    id: 2,
-    title: "Car & Bus Rental Service",
-    description: "Rent cars and buses for your travel needs",
+    id:2,
+    title: "Premium Rental Services",
+    description: "Comfortable and reliable vehicles for your journey",
     icon: "🚗",
     route: "/rental-service",
-    color: "bg-green-500",
-    backgroundImage: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGNhciUyMHJlbnRhbHxlbnwwfHwwfHx8MA%3D%3D&ixlib=rb-4.1.0&q=60&w=3000"
+    backgroundImage: "https://media.istockphoto.com/id/471170455/photo/hi-tec-city-building.webp?a=1&b=1&s=612x612&w=0&k=20&c=z0qB6HgA_zRS1n1oOL-Si6t0ND92B48jljIPYyIsDSY="
   }
 ];
 

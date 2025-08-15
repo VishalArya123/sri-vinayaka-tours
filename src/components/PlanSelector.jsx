@@ -1,44 +1,104 @@
-import { Users, Check } from "lucide-react"
+import React from 'react';
+import { Check, Users, Star } from 'lucide-react';
 
 const PlanSelector = ({ plans, selectedPlan, onPlanSelect }) => {
-  return (
-    <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-gray-800">Select Plan</h3>
+  if (!plans || plans.length === 0) return null;
 
-      <div className="grid gap-3">
+  return (
+    <div className="space-y-3">
+      <h4 className="font-playfair text-lg font-semibold text-secondary-800 mb-4">
+        Choose Your Plan
+      </h4>
+      
+      <div className="space-y-3">
         {plans.map((plan) => (
           <div
             key={plan.id}
             onClick={() => onPlanSelect(plan)}
-            className={`p-4 border rounded-xl cursor-pointer transition-all duration-300 ${
+            className={`relative p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 transform hover:scale-[1.02] ${
               selectedPlan?.id === plan.id
-                ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-                : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
+                ? 'border-primary-400 bg-primary-50 shadow-elegant'
+                : 'border-primary-200 bg-white hover:border-primary-300 hover:bg-primary-25 shadow-warm'
             }`}
           >
-            <div className="flex justify-between items-center">
-              <div className="flex items-center">
-                {selectedPlan?.id === plan.id && <Check className="h-5 w-5 text-blue-600 mr-3" />}
-                <div>
-                  <h4 className="font-medium text-gray-800">{plan.name}</h4>
-                  <div className="flex items-center text-gray-600 text-sm mt-1">
-                    <Users className="h-4 w-4 mr-1" />
-                    <span>
-                      Up to {plan.maxPersons} {plan.maxPersons === 1 ? "person" : "persons"}
-                    </span>
-                  </div>
+            {/* Selection Indicator */}
+            <div className={`absolute top-4 right-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+              selectedPlan?.id === plan.id
+                ? 'border-primary-500 bg-primary-500'
+                : 'border-secondary-300'
+            }`}>
+              {selectedPlan?.id === plan.id && (
+                <Check className="w-4 h-4 text-white" />
+              )}
+            </div>
+
+            <div className="pr-8">
+              {/* Plan Header */}
+              <div className="flex items-center justify-between mb-2">
+                <h5 className="font-playfair text-lg font-bold text-secondary-800">
+                  {plan.name}
+                </h5>
+                <div className="text-right">
+                  <span className="font-playfair text-xl font-bold text-primary-600">
+                    ₹{plan.price.toLocaleString()}
+                  </span>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-xl font-bold text-blue-600">₹{plan.price.toLocaleString()}</p>
-                <p className="text-xs text-gray-500">per group</p>
+
+              {/* Plan Details */}
+              <div className="space-y-2">
+                {plan.description && (
+                  <p className="font-poppins text-sm text-secondary-600">
+                    {plan.description}
+                  </p>
+                )}
+                
+                {plan.maxPersons && (
+                  <div className="flex items-center text-secondary-500">
+                    <Users className="w-4 h-4 mr-2" />
+                    <span className="font-poppins text-sm">
+                      Max {plan.maxPersons} {plan.maxPersons === 1 ? 'person' : 'people'}
+                    </span>
+                  </div>
+                )}
+
+                {/* Additional plan features if any */}
+                {plan.features && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {plan.features.slice(0, 3).map((feature, index) => (
+                      <span
+                        key={index}
+                        className="px-2 py-1 bg-accent-peach/20 text-accent-peach text-xs rounded-full font-poppins"
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Premium Badge for highest priced plan */}
+            {plan.price === Math.max(...plans.map(p => p.price)) && plans.length > 1 && (
+              <div className="absolute -top-2 left-4">
+                <div className="bg-elegant-gradient text-white px-3 py-1 rounded-full flex items-center">
+                  <Star className="w-3 h-3 mr-1 fill-current" />
+                  <span className="text-xs font-medium">Most Popular</span>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
-    </div>
-  )
-}
 
-export default PlanSelector
+      {/* Plan Benefits Note */}
+      <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-xl p-3 mt-4">
+        <p className="font-poppins text-xs text-secondary-600 text-center">
+          All plans include basic amenities. Select the plan that best fits your group size.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default PlanSelector;
